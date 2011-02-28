@@ -1,0 +1,139 @@
+/* YUI Reset CSS */
+html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var,optgroup{font-style:inherit;font-weight:inherit;}del,ins{text-decoration:none;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:baseline;}sub{vertical-align:baseline;}legend{color:#000;}input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}input,button,textarea,select{*font-size:100%;}
+
+/* YUI Fonts CSS */
+body{font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}select,input,button,textarea,button{font:99% arial,helvetica,clean,sans-serif;}table{font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
+
+html {
+	background: #fff url(../images/bg_top.gif) repeat-x scroll 0 0;
+}
+body, html {
+	font-size:12px;
+	font-family: Verdana,sans-serif,Arial,FreeSans;
+	margin:0;
+	padding:0;
+}
+
+table, tr, td, div, ul, ol, li, p, h1, h2, h3, h4, h5, h6	{
+	text-align: left;
+}
+a, a:link {
+	color: #6a7398;
+}
+a:hover {
+	color: #f00;
+}
+a:active, a:visited {
+	color: #6a7398;
+}
+
+#bos {
+	margin: auto;
+	max-width: 1024px;
+}
+
+#bos .page {
+	margin: 10px;
+}
+#bos .page h3 {
+	font-size: 1.28em;
+	font-weight: bold;
+	color: #333;
+	padding-bottom: 0.5em;
+}
+
+#bos #hd {
+	padding: 4px 10px 0 0;
+}
+
+#bos #hd .buser {
+	text-align: right;
+	font-size: 13px;
+}
+
+#bos #hd .buser .buname {
+	font-weight: bold;
+}
+
+#home {
+	margin: auto;
+	width: 280px;
+	padding-top: 20px;
+}
+
+#home a.menuitem,
+#home a.menuitem:hover {
+	display: inline-block;
+	margin-bottom: 5px;
+	cursor: pointer;
+	background:transparent url(../images/menuitem.gif) no-repeat scroll left top;
+	color: #FFFFFF;
+	width: 275px;
+	height: 33px;
+	text-decoration: none;
+}
+
+#home a.menuitem:hover {
+	color: #666666;
+}
+
+#home a.menuitem img {
+	float: left;
+	width: 26px;
+	height: 26px;
+	margin: 3px 0 0 5px;
+}
+
+#home a.menuitem span {
+	cursor: pointer;
+	font: bold 1.2em/27px Helvetica,Arial,sans-serif;
+	height: 32px;
+	margin-right: 6px;
+	padding: 1px 5px 0 10px;
+	/*text-shadow: -1px -1px 1px #297300; /**/
+}
+
+#userblock {
+	color:#666666;
+	text-align: left;
+}
+#userblock form{
+	clear: both;
+}
+
+.big #userblock {
+	margin: 10px;
+	line-height: 1em;
+}
+.big #userblock .atd span {
+	display: block;
+}
+.big #userblock .autologin {
+	display: block;
+}
+.big #userblock .autologin span {
+	display: inline;
+}
+.big #userblock #chk-autologin {
+	margin: 0 5px 0 0;
+}
+.big #userblock #txt-login,
+.big #userblock #txt-password {
+	font-family:Tahoma;
+	font-size: 2em;
+	margin-bottom: 10px;
+	width:300px;
+}
+.big #userblock .btn-authorize {
+	font-size: 1.5em;
+	padding: 0 6px;
+	display: block;
+	margin-top: 5px;
+}
+.big #userblock ul li {
+	float:left;
+}
+.big #userblock .register ,
+.big #userblock .recpwd {
+	padding: 10px 10px 0 0;
+}

@@ -1,0 +1,47 @@
+<!--[*]
+[tt=main]_my[/tt]
+[script]index.php[/script]
+[*]-->
+
+<style>
+	#yui-history-iframe {
+	  position:absolute;
+	  top:0; left:0;
+	  width:1px; height:1px; /* avoid scrollbars */
+	  visibility:hidden;
+	}
+</style>
+
+<iframe id="yui-history-iframe" src="/modules/bos/tt/blank.html"></iframe>
+<input id="yui-history-field" type="hidden" />
+
+<div id="bos">
+	<div id="hd">
+		<table style="width: 100%;"><tbody><tr>
+		<td>
+			<h3 id="page-title"></h3>
+		</td>
+		<td>
+		
+			<div class="buser">
+				<span class="buname">{v#username}</span>&nbsp;|&nbsp;
+				<a href="#?app=home" class="home">Главная</a>&nbsp;|&nbsp;
+				<a href="#" onclick="Brick.mod.bos.logout();" >Выйти</a>
+			</div>
+		
+		</td>
+		</tr></tbody></table>
+	</div>
+	<div id="bd">
+		<div id="home"></div>
+	</div>
+	<div id="ft">
+	
+	</div>
+</div>
+
+<script>
+	YAHOO.util.Event.onDOMReady(function () {
+		Brick.Component.API.fire('bos', 'os', 'buildWorkspace');
+	});
+</script>

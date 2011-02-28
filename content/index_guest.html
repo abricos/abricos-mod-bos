@@ -1,0 +1,25 @@
+<!--[*]
+[tt=main]_my[/tt]
+[mod=user]userblock[/mod]
+[*]-->
+<div id="background">
+	<table style="height: 100%; width: 100%;margin-top: 150px;"><tbody><tr>
+	<td width="37%"></td>
+	<td style="width: 300px;">
+		<div id="os_firstloading">
+			<span>Пожалуйста, подождите, идет загрузка...</span>
+			<span>Работает на платформе <a href="http://abricos.org" target="_blank">Abricos</a></span>
+		</div>
+		<div class="big" id="loginblock1" style="display: none;">
+			[mod]user:userblock[/mod]
+		</div>
+	</td>
+	<td width="37%"></td>
+	</tr></tbody></table>
+</div>
+<script>
+	Brick.Component.API.fireFunction('user', 'api', function(){
+		document.getElementById('os_firstloading').style.display = 'none';
+		document.getElementById('loginblock1').style.display = '';
+	});
+</script>
