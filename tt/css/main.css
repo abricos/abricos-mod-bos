@@ -32,16 +32,6 @@ a:active, a:visited {
 	max-width: 1024px;
 }
 
-#bos .page {
-	margin: 10px;
-}
-#bos .page h3 {
-	font-size: 1.28em;
-	font-weight: bold;
-	color: #333;
-	padding-bottom: 0.5em;
-}
-
 #bos #hd {
 	padding: 4px 10px 0 0;
 }
@@ -55,7 +45,25 @@ a:active, a:visited {
 	font-weight: bold;
 }
 
-#home {
+#bos #bd.movedmode {
+	overflow: hidden;
+}
+#bos #pages.movedmode {
+	position: relative;
+}
+
+#bos .page {
+	margin: 10px;
+}
+
+#bos .page h3 {
+	font-size: 1.28em;
+	font-weight: bold;
+	color: #333;
+	padding-bottom: 0.5em;
+}
+
+#home .menulist {
 	margin: auto;
 	width: 280px;
 	padding-top: 20px;

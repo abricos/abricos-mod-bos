@@ -1,7 +1,21 @@
+<!--{menulist}-->
+<div class="menulist">{v#rows}</div>
+
 <!--{menuitem}-->
-<a id="label-{v#name}-{i#id}" class="menuitem" href="#?app={v#id}">
+<a id="label-{v#name}-{i#id}" class="menuitem" href="#?app={v#mod}/{v#comp}/{v#page}">
 	<img src="{v#icon}" />
 	<span>{v#title}</span>
 </a>
 
-<!--{page}--><div id="{i#id}-{v#id}" class="page"></div>
+<!--{page}--><div id="{i#id}-{v#id}" class="page" style="display: none;"></div>
+
+<!--{waitpanel}-->
+<div class='hd'></div>
+<div class='bd'>
+	<div style="text-align: center; height: 70px;" >
+		<br />
+		Идет загрузка. <br />
+		Пожалуйста, подождите...<br />
+		<img src="/images/loading_line.gif" />
+	</div>
+</div>
