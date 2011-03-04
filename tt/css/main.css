@@ -31,9 +31,11 @@ a:active, a:visited {
 	margin: auto;
 	max-width: 1024px;
 }
-
 #bos #hd {
-	padding: 4px 10px 0 0;
+	padding: 4px 10px 6px 0;
+}
+#bos #hd {
+	border-bottom:1px solid #CBCBCB; 
 }
 
 #bos #hd .buser {
@@ -56,7 +58,8 @@ a:active, a:visited {
 	margin: 10px;
 }
 
-#bos .page h3 {
+#bos .page h3,
+#bos .page .hd {
 	font-size: 1.28em;
 	font-weight: bold;
 	color: #333;

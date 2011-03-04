@@ -36,6 +36,47 @@ Component.entryPoint = function(){
 		var TM = TMG.build(templates), T = TM.data, TId = TM.idManager;
 		w._TM = TM; w._T = T; w._TId = TId;
 	};
+
+	var BrickPanel = Brick.widget.Panel;
+	var Panel = function(config){
+		config = config || {};
+		
+		if (config.modal){
+			alert('Use Brick.widget.Dialog for modal panel in BosUI');
+	        return;
+		}
+		
+		if (L.isNull(Workspace.instance.declaredKey)){
+			alert('Can`t register page in BosUI. DeclaredKey is null');
+			return;
+		}
+		
+		this.init(config);
+	};
+	Panel.prototype = {
+		init: function(config){
+			var info = Workspace.instance.registerPage(this),
+				elPage = info['elPage'];
+			elPage.innerHTML = (config.template || this.initTemplate());
+			
+			var res = Dom.getElementsByClassName('bd', 'div', elPage);
+			if (res && res.length >= 1){
+				this.body = res[0];
+			}
+			
+			this.onLoad();
+			
+			Workspace.instance.showPage(info['key']);
+			this.onShow();
+		},
+		onLoad: function(){},
+		onShow: function(){},
+		destroy: function(){},
+		onClick: function(el){ return false; },
+		onResize: function(rel){}
+	};
+	NS.Panel = Panel;
+	Brick.widget.Panel = Panel;
 	
 	var WaitPanel = function(){
 		WaitPanel.superclass.constructor.call(this, {
@@ -43,7 +84,7 @@ Component.entryPoint = function(){
 			modal: true
 		});
 	};
-	YAHOO.extend(WaitPanel, Brick.widget.Panel, {
+	YAHOO.extend(WaitPanel, Brick.widget.Dialog, {
 		initTemplate: function(){
 			buildTemplate(this, 'waitpanel');
 			return this._TM.replace('waitpanel', {
@@ -174,15 +215,6 @@ Component.entryPoint = function(){
         return findA(el.parentNode, cnt+1);
 	};
 	
-	/*
-	var Page = function(){
-		
-	};
-	Page.prototype = {
-		
-	};
-	/**/
-	
 	var Workspace = function(){
 		this.init();
 	};
@@ -200,7 +232,7 @@ Component.entryPoint = function(){
 			var container = Dom.get("home");
 			this.container = container;
 			
-			this.pages = [{'key': 'home', 'element': container}];
+			this.pages = [{'key': 'home', 'element': container, 'panel': null}];
 			
 			var list = [];
 			// сформировать список модулей имеющих компонент 'app' в наличие
@@ -221,18 +253,59 @@ Component.entryPoint = function(){
 				__self.render(); 
 			}
 			
-			E.on(container, "click", function (evt) {
-				var el = findA(E.getTarget(evt));
+			var elBd = Dom.get('bd');
+			
+			E.on(elBd, "click", function (evt) {
+				var el = E.getTarget(evt);
+				var ps = __self.pages;
+				// сначало проверить клик в панелях
+				for (var i in ps){
+					var panel = ps[i]['panel'];
+					if (!L.isNull(panel) && panel.onClick(el)){
+						E.preventDefault(evt);
+						return;
+					}
+				}
+				
+				el = findA(el);
 				if (L.isNull(el)){ return; }
 				var href = el.getAttribute('href');
 
-				var newApp = H.getQueryStringParameter("app", href) || "home";
-				var currApp = H.getCurrentState("app", href);
-				if (newApp != currApp){
-					H.navigate("app", newApp);
+				var newApp = H.getQueryStringParameter("app", href);
+				if (newApp){ 
+					var currApp = H.getCurrentState("app", href);
+					if (newApp != currApp){
+						H.navigate("app", newApp);
+					}
 				}
 				E.preventDefault(evt);
 			});
+			
+            E.on(window, "resize", function(event){
+            	__self._setWorkspaceSize();
+            });
+            this._setWorkspaceSize();
+		},
+		
+		_setWorkspaceSize: function(key){
+			var r = Dom.getClientRegion();
+			
+			var el = Dom.get('bos'),
+				w = Math.max(Math.min(r.width, 1024), 640);
+            Dom.setStyle(el, "width", (w)+'px');
+            
+			var ps = this.pages;
+			for (var i in ps){
+				var panel = ps[i]['panel'];
+				if (!L.isNull(panel) && L.isFunction(panel.onResize)){
+					var rg = new YAHOO.util.Region(0, w, 0, 0);
+					
+					if ((key && key == ps[i]['key']) || !key){
+			            Dom.setStyle(ps[i]['element'], "width", (w)+'px');
+						panel.onResize(rg);
+					}
+				}
+			}
 		},
 		
 		render: function(){
@@ -275,25 +348,16 @@ Component.entryPoint = function(){
 				TM = this._TM,
 				__self = this;
 			
+			this.declaredKey = key;
+			
 			var fire = function(){
 				
 				wait.close();
+				
 				var fn = Brick.mod[mod]['API'][page];
 				if (!L.isFunction(fn)){ return; }
 				
-				var div = document.createElement('div');
-				div.innerHTML = TM.replace('page', {
-					'id': key.replace(/\//g, '-')
-				});
-				element = div.childNodes[0];
-				Dom.get('pages').appendChild(element);
-				
-				fn(element, prm1, prm2, prm3, prm4, prm5);
-				__self.addPage(key, element);
-				__self.showPage(key);
-				
-				// Dom.get('home').style.display = 'none';
-				// element.style.display = '';
+				fn(prm1, prm2, prm3, prm4, prm5);
 			};
 			
 			if (!Brick.componentLoaded(mod, comp)){
@@ -305,6 +369,26 @@ Component.entryPoint = function(){
 			}
 		},
 		
+		registerPage: function(panel){
+			var key = this.declaredKey,
+				div = document.createElement('div');
+			div.innerHTML = this._TM.replace('page', {
+				'id': key.replace(/\//g, '-')
+			});
+			var elPage = div.childNodes[0];
+			Dom.get('pages').appendChild(elPage);
+			this.declaredKey = null;
+
+			this.addPage(key, elPage, panel);
+			return {'elPage': elPage, 'key': key};
+		},
+		
+		addPage: function(key, element, panel){
+			if (this.pageExist(key)){ return; }
+			var ps = this.pages;
+			ps[ps.length] = {'key': key, 'element': element, 'panel': panel};
+		},
+
 		showPage: function(key){
 			if (this.selectedKey == key){ return; }
 			
@@ -341,6 +425,7 @@ Component.entryPoint = function(){
 			Dom.setStyle(e2, 'display', '');
 			
 			this.selectedKey = key;
+			this._setWorkspaceSize(key);
 			
 			var stop = function(){
 				e1.style.display = 'none';
@@ -357,8 +442,6 @@ Component.entryPoint = function(){
 			
 			var thread = setInterval(function(){
 				if (
-//						(xc > xn && xn > x) || // движение вперед 
-//						(xc < xn && xn < x) // движение назад
 						(i1<i2 && x < -(w-dx)) ||
 						(i1>i2 && x >= 0)
 					){
@@ -370,7 +453,6 @@ Component.entryPoint = function(){
 				
 				Dom.setStyle(ePS, 'left', (x)+'px');
 			}, 10);
-			
 		},
 		
 		pageExist: function(key){
@@ -385,74 +467,7 @@ Component.entryPoint = function(){
 				}
 			}
 			return null;
-		},
-		
-		addPage: function(key, element){
-			if (this.pageExist(key)){ return; }
-			var ps = this.pages;
-			ps[ps.length] = {'key': key, 'element': element};
 		}
-		
-		/*
-		,
-		
-		openPage: function(){
-			
-		},
-		
-		openAppById: function(appid){
-			var app = NS.ApplicationManager.getById(appid);
-			if (L.isNull(app)){ return false; }
-			this.openApp(app);
-			return true;
-		},
-		
-		showPage: function(appid){
-			
-			var elId = appid == 'home' ? 'home' : this._TId['page']['id']+'-'+app.id;
-			
-		},
-		
-		openApp: function(app){
-			if (this.selectedApp == app){ return; }
-			var elId = this._TId['page']['id']+'-'+app.id;
-			
-			var element = Dom.get(elId);
-			if (!L.isNull(element)){
-				Dom.get('home').style.display = 'none';
-				element.style.display = '';
-				return;
-			}
-			
-			var div = document.createElement('div');
-			div.innerHTML = this._TM.replace('page', {
-				'id': app.id 
-			});
-			element = div.childNodes[0];
-			Dom.get('bd').appendChild(element);
-			
-			var fire = function(){
-				var fn = L.isFunction(app.entryPoint) ? app.entryPoint : Brick.convertToObject(app.entryPoint);
-				if (!L.isFunction(fn)){ return; }
-				
-				fn(element);
-				Dom.get('home').style.display = 'none';
-				element.style.display = '';
-			};
-			
-			if (app.entryComponent != ''){
-				if (!Brick.componentLoaded(app.moduleName, app.entryComponent)){
-					Brick.Component.API.fireFunction(app.moduleName, app.entryComponent, function(){
-						fire();
-					});
-				}else{
-					fire();
-				}
-			}else{
-				fire();
-			}
-		}
-		/**/
 	};
 	NS.Workspace = Workspace;
 	
