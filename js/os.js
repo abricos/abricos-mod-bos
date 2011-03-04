@@ -329,6 +329,9 @@ Component.entryPoint = function(){
 				__self.navigate(key);
 			});
 			YAHOO.util.History.initialize("yui-history-field", "yui-history-iframe");
+			if (bookmarkedSection != "home"){
+				this.navigate(bookmarkedSection);
+			}
 		},
 		
 		navigate: function(key){
