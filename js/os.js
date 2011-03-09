@@ -215,6 +215,32 @@ Component.entryPoint = function(){
         return findA(el.parentNode, cnt+1);
 	};
 	
+    var getBookmarkedParameter = function (paramName, url) {
+
+        var i, len, idx, queryString, params, tokens;
+
+        url = url || top.location.href;
+        idx = url.indexOf("#");
+        queryString = idx >= 0 ? url.substr(idx + 1) : url;
+
+        idx = url.indexOf("?");
+        queryString = idx >= 0 ? queryString.substr(idx) : queryString;
+        
+        params = queryString.split("&");
+
+        for (i = 0, len = params.length; i < len; i++) {
+            tokens = params[i].split("=");
+            if (tokens.length >= 2) {
+                if (tokens[0] === paramName) {
+                    return unescape(tokens[1]);
+                }
+            }
+        }
+
+        return null;
+    };
+
+	
 	var Workspace = function(){
 		this.init();
 	};
@@ -257,8 +283,25 @@ Component.entryPoint = function(){
 			
 			E.on(elBd, "click", function (evt) {
 				var el = E.getTarget(evt);
+				
+				elGoApp = findA(el);
+				if (!L.isNull(elGoApp)){ 
+					var href = elGoApp.getAttribute('href');
+					var newApp = getBookmarkedParameter("app", href);
+					
+					if (newApp){ // идентификатор приложения не пустой => выполняем его
+						E.preventDefault(evt);
+						
+						var currApp = H.getCurrentState("app", href);
+						if (newApp != currApp){
+							H.navigate("app", newApp);
+						}
+						return;
+					}
+				}
+
 				var ps = __self.pages;
-				// сначало проверить клик в панелях
+				// проверить клик в панелях
 				for (var i in ps){
 					var panel = ps[i]['panel'];
 					if (!L.isNull(panel) && panel.onClick(el)){
@@ -267,18 +310,6 @@ Component.entryPoint = function(){
 					}
 				}
 				
-				el = findA(el);
-				if (L.isNull(el)){ return; }
-				var href = el.getAttribute('href');
-
-				var newApp = H.getQueryStringParameter("app", href);
-				if (newApp){ 
-					var currApp = H.getCurrentState("app", href);
-					if (newApp != currApp){
-						H.navigate("app", newApp);
-					}
-				}
-				E.preventDefault(evt);
 			});
 			
             E.on(window, "resize", function(event){
@@ -412,13 +443,12 @@ Component.entryPoint = function(){
 			
 			var w = rg.width, dx = 50, x = 0;
 
-			Dom.setStyle(ePS, 'width', (w*2+20)+'px');
+			Dom.setStyle(ePS, 'width', (w*2+40)+'px');
 			if (i1>i2){
 				Dom.setStyle(ePS, 'left', (-w)+'px');
 				dx = -dx;
 				x = -w;
 			}
-
 			
 			Dom.setStyle(e1, 'float', 'left');
 			Dom.setStyle(e1, 'width', w+'px');
@@ -442,7 +472,7 @@ Component.entryPoint = function(){
 				Dom.removeClass(eBD, 'movedmode');
 				Dom.removeClass(ePS, 'movedmode');
 			};
-			
+
 			var thread = setInterval(function(){
 				if (
 						(i1<i2 && x < -(w-dx)) ||
