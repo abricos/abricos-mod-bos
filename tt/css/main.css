@@ -35,7 +35,14 @@ a:active, a:visited {
 	padding: 4px 10px 6px 0;
 }
 #bos #hd {
-	border-bottom:1px solid #CBCBCB; 
+	border-bottom:1px solid #C82100; 
+	/* border-bottom:1px solid #CBCBCB;/**/ 
+}
+#bos #bd {
+	min-height: 420px;
+}
+#bos #ft {
+	border-top:1px solid #446803;
 }
 
 #bos #hd .buser {
@@ -55,11 +62,14 @@ a:active, a:visited {
 }
 
 #bos .page {
-	margin: 10px;
+	margin-top: 10px;
 }
 
-#bos .page h3,
 #bos .page .hd {
+	display: none;
+}
+
+#bos .page h3 {
 	font-size: 1.28em;
 	font-weight: bold;
 	color: #333;

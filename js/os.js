@@ -27,7 +27,6 @@ Component.entryPoint = function(){
 		API = NS.API,
 		TMG = this.template;
 	
-	
 	NS.logout = function(){
 		alert('logout');
 	};
@@ -58,12 +57,13 @@ Component.entryPoint = function(){
 			var info = Workspace.instance.registerPage(this),
 				elPage = info['elPage'];
 			elPage.innerHTML = (config.template || this.initTemplate());
+			this._wPageInfo = info;
 			
 			var res = Dom.getElementsByClassName('bd', 'div', elPage);
 			if (res && res.length >= 1){
 				this.body = res[0];
 			}
-			
+
 			this.onLoad();
 			
 			Workspace.instance.showPage(info['key']);
@@ -73,7 +73,13 @@ Component.entryPoint = function(){
 		onShow: function(){},
 		destroy: function(){},
 		onClick: function(el){ return false; },
-		onResize: function(rel){}
+		onResize: function(rel){},
+		close: function(){
+			this.destroy();
+			var elPage = this._wPageInfo['elPage'];
+			elPage.parentNode.removeChild(elPage);
+			Workspace.instance.closePage(this._wPageInfo['key']);
+		}
 	};
 	NS.Panel = Panel;
 	Brick.widget.Panel = Panel;
@@ -93,6 +99,23 @@ Component.entryPoint = function(){
 		}
 	});
 	NS.WaitPanel = WaitPanel;
+	
+	NS.wait = function(){
+		
+		var waitPanel = null;
+		
+		return {
+			show: function(){
+				waitPanel = new WaitPanel();
+			},
+			hide: function(){
+				if (L.isNull(waitPanel)){ return; }
+				waitPanel.close();
+				waitPanel = null;
+			}
+		};
+	}();
+
 	
 	/**
 	 * Приложение BOS.
@@ -353,7 +376,7 @@ Component.entryPoint = function(){
 			});
 			
 			this.container.innerHTML = TM.replace('menulist', {'rows': lst});
-			
+
 			var __self = this;
 			var bookmarkedSection = H.getBookmarkedState("app") || "home";
 			H.register("app", bookmarkedSection, function (key) {
@@ -371,22 +394,22 @@ Component.entryPoint = function(){
 				comp = arr[1] || '',
 				page = arr[2] || '',
 				prm1 = arr[3] || '', prm2=arr[4]||'', prm3=arr[5]||'', prm4=arr[6]||'', prm5=arr[7]||'';
-			
+
 			if (this.pageExist(key)){
 				this.showPage(key);
 				return; 
 			}
 			if (!Brick.componentExists(mod, comp)){ return; }
 			
-			var wait = new WaitPanel(),
-				TM = this._TM,
+			var TM = this._TM,
 				__self = this;
 			
 			this.declaredKey = key;
 			
+			NS.wait.show();
 			var fire = function(){
 				
-				wait.close();
+				NS.wait.hide();
 				
 				var fn = Brick.mod[mod]['API'][page];
 				if (!L.isFunction(fn)){ return; }
@@ -422,10 +445,29 @@ Component.entryPoint = function(){
 			var ps = this.pages;
 			ps[ps.length] = {'key': key, 'element': element, 'panel': panel};
 		},
+		
+		closePage: function(key){
+			var page = this.getPage(key);
+			
+			var ps = this.pages,
+				nps = [];
+			for (var i in ps){
+				if (ps[i]['key'] != key){
+					nps[nps.length] = ps[i];
+				}
+			}
+			this.pages = nps;
+			if (this.prevDeclareKey == key){
+				this.prevDeclareKey = "home";
+			}
+			H.navigate("app", this.prevDeclareKey);
+		},
 
 		showPage: function(key){
 			if (this.selectedKey == key){ return; }
 			
+			this.prevDeclareKey = this.selectedKey;
+
 			// reindex pages
 			var ps = this.pages;
 			for (var i=0; i<ps.length;i++){
@@ -435,57 +477,85 @@ Component.entryPoint = function(){
 			var eBD = Dom.get('bd'),
 				ePS = Dom.get('pages'),
 				rg = Dom.getRegion(eBD),
-				p1 = this.getPage(this.selectedKey), i1 = p1.index, e1 = p1.element,
-				p2 = this.getPage(key), i2 = p2.index, e2 = p2.element;
-			
-			Dom.addClass(eBD, 'movedmode');
-			Dom.addClass(ePS, 'movedmode');
-			
-			var w = rg.width, dx = 50, x = 0;
+				p1 = this.getPage(this.selectedKey),
+				p2 = this.getPage(key);
 
-			Dom.setStyle(ePS, 'width', (w*2+40)+'px');
-			if (i1>i2){
-				Dom.setStyle(ePS, 'left', (-w)+'px');
-				dx = -dx;
-				x = -w;
-			}
-			
-			Dom.setStyle(e1, 'float', 'left');
-			Dom.setStyle(e1, 'width', w+'px');
-			
-			Dom.setStyle(e2, 'float', 'left');
-			Dom.setStyle(e2, 'width', w+'px');
-			Dom.setStyle(e2, 'display', '');
-			
 			this.selectedKey = key;
 			this._setWorkspaceSize(key);
-			
-			var stop = function(){
-				e1.style.display = 'none';
-				Dom.setStyle(e1, 'float', '');
-				Dom.setStyle(e1, 'width', '');
-				Dom.setStyle(e2, 'float', '');
-				Dom.setStyle(e2, 'width', '');
-				Dom.setStyle(ePS, 'width', '');
-				Dom.setStyle(ePS, 'left', '');
-				
-				Dom.removeClass(eBD, 'movedmode');
-				Dom.removeClass(ePS, 'movedmode');
-			};
 
-			var thread = setInterval(function(){
-				if (
-						(i1<i2 && x < -(w-dx)) ||
-						(i1>i2 && x >= 0)
-					){
-					clearInterval(thread);
-					stop();
-					return;
-				}
-				x -= dx;
+			if (L.isNull(p1)){ // панель была закрыта по close 
+				Dom.setStyle(p2.element, 'display', '');
+				return;
+			}
+			
+			var i1 = p1.index, e1 = p1.element,
+				i2 = p2.index, e2 = p2.element;
+
+
+			var moveEffect = false;
+			
+			if (!moveEffect){
 				
-				Dom.setStyle(ePS, 'left', (x)+'px');
-			}, 10);
+				var wait = new WaitPanel();
+				setTimeout(function(){
+					
+					Dom.setStyle(e1, 'display', 'none');
+					Dom.setStyle(e2, 'display', '');
+
+					setTimeout(function(){
+						wait.close();
+					}, 300);
+				}, 300);
+			}else{
+
+				// эффект перелистывания
+				Dom.addClass(eBD, 'movedmode');
+				Dom.addClass(ePS, 'movedmode');
+				
+				var w = rg.width, dx = 50, x = 0;
+
+				Dom.setStyle(ePS, 'width', (w*2+40)+'px');
+				if (i1>i2){
+					Dom.setStyle(ePS, 'left', (-w)+'px');
+					dx = -dx;
+					x = -w;
+				}
+				
+				Dom.setStyle(e1, 'float', 'left');
+				Dom.setStyle(e1, 'width', w+'px');
+				
+				Dom.setStyle(e2, 'float', 'left');
+				Dom.setStyle(e2, 'width', w+'px');
+				Dom.setStyle(e2, 'display', '');
+				
+				var stop = function(){
+					Dom.setStyle(e1, 'display', 'none');
+					Dom.setStyle(e1, 'float', '');
+					Dom.setStyle(e1, 'width', '');
+					Dom.setStyle(e2, 'float', '');
+					Dom.setStyle(e2, 'width', '');
+					Dom.setStyle(ePS, 'width', '');
+					Dom.setStyle(ePS, 'left', '');
+					
+					Dom.removeClass(eBD, 'movedmode');
+					Dom.removeClass(ePS, 'movedmode');
+				};
+				
+				var thread = setInterval(function(){
+					if (
+							(i1<i2 && x < -(w-dx)) ||
+							(i1>i2 && x >= 0)
+						){
+						clearInterval(thread);
+						stop();
+						return;
+					}
+					x -= dx;
+					
+					Dom.setStyle(ePS, 'left', (x)+'px');
+				}, 10);
+								
+			}
 		},
 		
 		pageExist: function(key){
