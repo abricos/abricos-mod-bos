@@ -18,13 +18,15 @@ table, tr, td, div, ul, ol, li, p, h1, h2, h3, h4, h5, h6	{
 	text-align: left;
 }
 a, a:link {
-	color: #6a7398;
+	/*color: #6a7398;/**/
+    color: #006699;
 }
 a:hover {
 	color: #f00;
 }
 a:active, a:visited {
-	color: #6a7398;
+	/*color: #6a7398; /**/
+    color: #006699;
 }
 
 #bos {
@@ -43,6 +45,8 @@ a:active, a:visited {
 }
 #bos #ft {
 	border-top:1px solid #446803;
+	margin-top: 1em;
+	margin-bottom: 2em;
 }
 
 #bos #hd .buser {
