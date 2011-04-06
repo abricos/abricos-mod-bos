@@ -307,9 +307,10 @@ Component.entryPoint = function(){
 			E.on(elBd, "click", function (evt) {
 				var el = E.getTarget(evt);
 				
+				var href = "";
 				elGoApp = findA(el);
 				if (!L.isNull(elGoApp)){ 
-					var href = elGoApp.getAttribute('href');
+					href = elGoApp.getAttribute('href');
 					var newApp = getBookmarkedParameter("app", href);
 					
 					if (newApp){ // идентификатор приложения не пустой => выполняем его
@@ -333,6 +334,9 @@ Component.entryPoint = function(){
 					}
 				}
 				
+				if (href="#"){
+					E.preventDefault(evt);
+				}
 			});
 			
             E.on(window, "resize", function(event){
@@ -496,6 +500,9 @@ Component.entryPoint = function(){
 			
 			if (!moveEffect){
 				
+				Dom.setStyle(e1, 'display', 'none');
+				Dom.setStyle(e2, 'display', '');
+				/*
 				var wait = new WaitPanel();
 				setTimeout(function(){
 					
@@ -506,6 +513,7 @@ Component.entryPoint = function(){
 						wait.close();
 					}, 300);
 				}, 300);
+				/**/
 			}else{
 
 				// эффект перелистывания
