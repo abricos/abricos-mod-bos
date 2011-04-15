@@ -275,7 +275,7 @@ Component.entryPoint = function(){
 			
 			this.selectedKey = 'home';
 			
-			var TM = TMG.build('menulist,menuitem,page'), T = TM.data, TId = TM.idManager;
+			var TM = TMG.build('menulist,menuitem,page,labellist,label'), T = TM.data, TId = TM.idManager;
 			this._T = T; this._TId = TId; this._TM = TM;
 			
 			var container = Dom.get("home");
@@ -367,7 +367,7 @@ Component.entryPoint = function(){
 		},
 		
 		render: function(){
-			var __self = this, lst = "", TM = this._TM;
+			var __self = this, lst = "", TM = this._TM, lst1 = "";
 			NS.ApplicationManager.each(function(app){
 				lst += TM.replace('menuitem', {
 					'id': app.id,
@@ -377,9 +377,21 @@ Component.entryPoint = function(){
 					'icon': app.icon,
 					'title': app.getTitle()
 				});
+				
+				lst1 += TM.replace('label', {
+					'id': app.id,
+					'mod': app.moduleName,
+					'comp': app.entryComponent,
+					'name': app.moduleName+'-'+app.entryComponent,
+					'page': app.entryPoint,
+					'icon': app.icon,
+					'title': app.getTitle()
+				});
 			});
 			
 			this.container.innerHTML = TM.replace('menulist', {'rows': lst});
+			
+			Dom.get('bosmenu').innerHTML = TM.replace('labellist', {'list': lst1});
 
 			var __self = this;
 			var bookmarkedSection = H.getBookmarkedState("app") || "home";

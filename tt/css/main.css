@@ -34,28 +34,79 @@ a:active, a:visited {
 	max-width: 1024px;
 }
 #bos #hd {
-	padding: 4px 10px 6px 0;
+	padding-top: 4px;
 }
 #bos #hd {
 	border-bottom:1px solid #C82100; 
 	/* border-bottom:1px solid #CBCBCB;/**/ 
 }
-#bos #bd {
-	min-height: 420px;
-}
 #bos #ft {
 	border-top:1px solid #446803;
 	margin-top: 1em;
 	margin-bottom: 2em;
+	padding-top: 3px;
+}
+#bos #ft .abricos {
+	font-size: 0.9em;
+	text-align: right;
+}
+#bos #ft .abricos a {
+	color: #999999;
+	text-decoration: none;
+}
+#bos #ft .abricos a:hover {
+	text-decoration: underline;
 }
 
 #bos #hd .buser {
 	text-align: right;
 	font-size: 13px;
+	height: 1.7em;
 }
-
 #bos #hd .buser .buname {
 	font-weight: bold;
+}
+
+
+#bos #hd .bosmenu {
+	border-top:1px solid #C82100; 
+}
+#bos #hd #bosmenu .label {
+	float: left;
+	font-size:11px;
+	cursor:pointer;
+	color:#000; 
+	text-align:center; 
+	width:80px; 
+	height:67px;
+	margin: 10px 5px 7px 0;
+}
+#bos #hd #bosmenu .label .aligner {
+	margin: auto;
+}
+#bos #hd #bosmenu .label img {
+	margin: 0 auto;
+	display: block;
+	width:50px; 
+	height:50px;
+}
+#bos #hd #bosmenu a.label {
+	color: black;
+	text-decoration: none;
+}
+#bos #hd #bosmenu a.label:hover {
+	text-decoration: underline;
+}
+
+
+#bos #bd {
+	min-height: 420px;
+}
+#bos #bd #home .firstwaitpanel {
+	text-align: center; 
+	margin: auto; 
+	padding-top: 170px; 
+	width: 300px;
 }
 
 #bos #bd.movedmode {
