@@ -28,7 +28,9 @@ Component.entryPoint = function(){
 		TMG = this.template;
 	
 	NS.logout = function(){
-		alert('logout');
+		Brick.f('user', 'api', 'userLogout', function(){
+			Brick.Page.reload();
+		});
 	};
 	
 	var buildTemplate = function(w, templates){
