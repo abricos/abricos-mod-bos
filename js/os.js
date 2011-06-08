@@ -336,7 +336,7 @@ Component.entryPoint = function(){
 					}
 				}
 				
-				if (href="#"){
+				if (href == "#"){
 					E.preventDefault(evt);
 				}
 			});
