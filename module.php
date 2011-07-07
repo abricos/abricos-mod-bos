@@ -10,9 +10,6 @@
  * @author Alexander Kuzmin (roosit@abricos.org)
  */
 
-$mod = new BosModule();
-CMSRegistry::$instance->modules->Register($mod);
-
 class BosModule extends CMSModule {
 	
 	/**
@@ -43,7 +40,9 @@ class BosModule extends CMSModule {
 		
 		return $cname;
 	}
-
 }
+
+$mod = new BosModule();
+CMSRegistry::$instance->modules->Register($mod);
 
 ?>
