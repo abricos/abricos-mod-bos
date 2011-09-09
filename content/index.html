@@ -19,14 +19,14 @@
 	<div id="hd">
 		<table style="width: 100%;"><tbody><tr>
 		<td>
-			<h3 id="page-title"></h3>
+			<a href="/" class="home">Главная</a>
 		</td>
 		<td>
-		
 			<div class="buser">
-				<span class="buname">{v#username}</span>&nbsp;|&nbsp;
-				<a href="/" class="home">Главная</a>&nbsp;|&nbsp;
-				<a href="#" onclick="Brick.mod.bos.logout();" >Выйти</a>
+				<a href="#" class="show-user-profile user-{v#userid}" title="Открыть мою страницу">{v#username}</a>
+				<a href="/user/" title="Редактировать профиль">ред.</a> 
+				(<a href="#" onclick="Brick.mod.bos.logout();" >выйти</a>)
+				
 			</div>
 		
 		</td>

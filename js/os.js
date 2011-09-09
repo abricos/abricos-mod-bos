@@ -190,6 +190,13 @@ Component.entryPoint = function(){
 		this.entryPoint = null;
 		
 		/**
+		 * Функция автозагрузки
+		 * @property startup
+		 * @type Function
+		 */
+		this.startup = null;
+		
+		/**
 		 * Получить надпись.
 		 * 
 		 * @method getTitle
@@ -229,6 +236,20 @@ Component.entryPoint = function(){
 			}
 			return null;
 		}; 
+		
+		// Автозагрузка
+		var startup = [];
+		
+		this.startupRegister = function(func){
+			if (!L.isFunction(func)){ return; }
+			startup[startup.length] = func;
+		};
+		
+		this.startupEach = function(func){
+			for (var i=0;i<startup.length;i++){
+				func(startup[i]);
+			}
+		};
 		
 	});
 	NS.ApplicationManager = ApplicationManager;
@@ -370,6 +391,11 @@ Component.entryPoint = function(){
 		
 		render: function(){
 			var __self = this, lst = "", TM = this._TM, lst1 = "";
+			
+			NS.ApplicationManager.startupEach(function(f){
+				f();
+			});
+			
 			NS.ApplicationManager.each(function(app){
 				lst += TM.replace('menuitem', {
 					'id': app.id,

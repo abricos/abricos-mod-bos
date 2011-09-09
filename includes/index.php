@@ -10,8 +10,17 @@
 
 $brick = Brick::$builder->brick;
 
+$user = CMSRegistry::$instance->user->info;
+
+$unm = $user['username'];
+$lnm = $user['lastname'];
+$fnm = $user['firstname'];
+
+$username = empty($lnm) && empty($fnm) ? $unm : $fnm."&nbsp;".$lnm;
+
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
-	"username" => CMSRegistry::$instance->user->info['username']
+	"userid" => $user['userid'],
+	"username" => $username
 ));
  
 ?>

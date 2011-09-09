@@ -34,11 +34,23 @@ a:active, a:visited {
 	max-width: 1024px;
 }
 #bos #hd {
-	padding-top: 4px;
+	padding-top: 8px;
 }
 #bos #hd {
 	border-bottom:1px solid #C82100; 
-	/* border-bottom:1px solid #CBCBCB;/**/ 
+}
+
+#bos #hd,
+#bos #hd a {
+	color: #2B587A;
+	text-decoration: none;
+}
+#bos #hd a:hover {
+	text-decoration: underline;
+}
+
+#bos #hd a.minbtn {
+	color: gray;
 }
 #bos #ft {
 	border-top:1px solid #446803;
@@ -63,12 +75,9 @@ a:active, a:visited {
 	font-size: 13px;
 	height: 1.7em;
 }
-#bos #hd .buser .buname {
-	font-weight: bold;
-}
-
 
 #bos #hd .bosmenu {
+	margin-top: 4px;
 	border-top:1px solid #C82100; 
 }
 #bos #hd #bosmenu .label {
