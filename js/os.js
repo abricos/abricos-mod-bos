@@ -445,9 +445,6 @@ Component.entryPoint = function(){
 			}
 			if (!Brick.componentExists(mod, comp)){ return; }
 			
-			var TM = this._TM,
-				__self = this;
-			
 			this.declaredKey = key;
 			
 			NS.wait.show();
@@ -627,5 +624,31 @@ Component.entryPoint = function(){
 			new NS.Workspace();
 		});
 	};
+	
+	var _sysAJAX = Brick.ajax;
+	
+	Brick.ajax = function(modname, cfg){
+		_sysAJAX('bos', {
+			'data': {
+				'nm': modname,
+				'd': cfg['data']
+			},
+			'event': function(request){
+				var rd = request.data;
+				if (L.isNull(rd)){ return; } // ошибка сервера
 
+				request.data = rd.r;
+
+				if (rd.u*1 != Brick.env.user.id*1){ // пользователь разлогинился
+					Brick.Page.reload();
+					return false;
+				}
+				
+				if (L.isFunction(cfg['event'])){
+					cfg['event'](request);
+				}
+			}
+		});
+	};
+	
 };

@@ -17,7 +17,7 @@ class BosModule extends CMSModule {
 	 */
 	public function __construct(){
 		// Версия модуля
-		$this->version = "0.1";
+		$this->version = "0.1.1";
 		
 		// Название модуля
 		$this->name = "bos";
@@ -25,6 +25,18 @@ class BosModule extends CMSModule {
 		// $this->takelink = "__super";
 		$this->takelink = "bos";
 	}
+	
+	/**
+	 * @return BosManager
+	 */
+	public function GetManager(){
+		if (is_null($this->_manager)){
+			require_once 'includes/manager.php';
+			$this->_manager = new BosManager($this);
+		}
+		return $this->_manager;
+	}
+	
 	
 	public function GetContentName(){
 		
