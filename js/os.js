@@ -190,11 +190,18 @@ Component.entryPoint = function(){
 		this.entryPoint = null;
 		
 		/**
-		 * Функция автозагрузки
+		 * Функция автозагрузки до построения интерфейса
 		 * @property startup
 		 * @type Function
 		 */
 		this.startup = null;
+		
+		/**
+		 * Функция автозагрузки после построения интерфейса
+		 * @property startupAfter
+		 * @type Function
+		 */
+		this.startupAfter = null;
 		
 		/**
 		 * Получить надпись.
@@ -250,7 +257,21 @@ Component.entryPoint = function(){
 				func(startup[i]);
 			}
 		};
+
+		// Автозагрузка
+		var startupAfter = [];
 		
+		this.startupAfterRegister = function(func){
+			if (!L.isFunction(func)){ return; }
+			startupAfter[startupAfter.length] = func;
+		};
+		
+		this.startupAfterEach = function(func){
+			for (var i=0;i<startupAfter.length;i++){
+				func(startupAfter[i]);
+			}
+		};
+
 	});
 	NS.ApplicationManager = ApplicationManager;
 	
@@ -297,6 +318,8 @@ Component.entryPoint = function(){
 			Workspace.instance = this;
 			
 			this.selectedKey = 'home';
+			
+			this.elementLabelList = null;
 			
 			var TM = TMG.build('menulist,menuitem,page,labellist,label'), T = TM.data, TId = TM.idManager;
 			this._T = T; this._TId = TId; this._TM = TM;
@@ -420,6 +443,8 @@ Component.entryPoint = function(){
 			this.container.innerHTML = TM.replace('menulist', {'rows': lst});
 			
 			Dom.get('bosmenu').innerHTML = TM.replace('labellist', {'list': lst1});
+			
+			this.elementLabelList = TM.getEl('labellist.id');
 
 			var __self = this;
 			var bookmarkedSection = H.getBookmarkedState("app") || "home";
@@ -430,6 +455,10 @@ Component.entryPoint = function(){
 			if (bookmarkedSection != "home"){
 				this.navigate(bookmarkedSection);
 			}
+			
+			NS.ApplicationManager.startupAfterEach(function(f){
+				f();
+			});
 		},
 		
 		navigate: function(key){
