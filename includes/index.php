@@ -10,7 +10,7 @@
 
 $brick = Brick::$builder->brick;
 
-$user = CMSRegistry::$instance->user->info;
+$user = Abricos::$user->info;
 
 $unm = $user['username'];
 $lnm = $user['lastname'];

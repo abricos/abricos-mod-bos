@@ -10,14 +10,14 @@
  * @author Alexander Kuzmin (roosit@abricos.org)
  */
 
-class BosModule extends CMSModule {
+class BosModule extends Ab_Module {
 	
 	/**
 	 * Конструктор
 	 */
 	public function __construct(){
 		// Версия модуля
-		$this->version = "0.1.1";
+		$this->version = "0.1.2";
 		
 		// Название модуля
 		$this->name = "bos";
@@ -40,7 +40,7 @@ class BosModule extends CMSModule {
 	
 	public function GetContentName(){
 		
-		if (!CMSRegistry::$instance->user->IsRegistred()){
+		if (Abricos::$user->id == 0){
 			return "index_guest";
 		}
 		$cname = 'index';
@@ -54,7 +54,6 @@ class BosModule extends CMSModule {
 	}
 }
 
-$mod = new BosModule();
-CMSRegistry::$instance->modules->Register($mod);
+Abricos::ModuleRegister(new BosModule());
 
 ?>

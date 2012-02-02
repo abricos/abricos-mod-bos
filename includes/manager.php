@@ -8,7 +8,7 @@
  * @author Alexander Kuzmin (roosit@abricos.org)
  */
 
-class BosManager extends ModuleManager {
+class BosManager extends Ab_ModuleManager {
 	
 	/**
 	 * @var BosModule
@@ -16,27 +16,18 @@ class BosManager extends ModuleManager {
 	public $module = null;
 	
 	/**
-	 * User
-	 * @var User
-	 */
-	public $user = null;
-	public $userid = 0;
-	
-	/**
 	 * @var BosManager
 	 */
 	public static $instance = null; 
 	
-	public function BosManager(BosModule $module){
-		parent::ModuleManager($module);
+	public function __construct(BosModule $module){
+		parent::__construct($module);
 		
-		$this->user = CMSRegistry::$instance->modules->GetModule('user');
-		$this->userid = $this->user->info['userid'];
 		BosManager::$instance = $this;
 	}
 	
 	private function _AJAX($modname, $data){
-		$module = CMSRegistry::$instance->modules->GetModule($modname);
+		$module = Abricos::GetModule($modname);
 		if (empty($module)){ 
 			return null; 
 		}

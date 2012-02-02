@@ -19,13 +19,16 @@
 	<div id="hd">
 		<table style="width: 100%;"><tbody><tr>
 		<td>
-			<a href="/" class="home">Главная</a>
+			<a href="/" class="home" style="display: none;">Главная</a>
+		</td>
+		<td>
+			<div id="activepanel"></div>
 		</td>
 		<td>
 			<div class="buser">
 				<a href="#" class="show-user-profile user-{v#userid}" title="Открыть мою страницу">{v#username}</a>
-				<a id="myprofileedit" href="/user/" title="Редактировать профиль">ред.</a> 
-				(<a href="#" onclick="Brick.mod.bos.logout();" >выйти</a>)
+				<a id="myprofileedit" href="/user/" class="show-user-profile user-{v#userid}" title="Редактировать профиль">ред.</a> 
+				(<a href="#" onclick="Brick.mod.bos.logout(); return false;" >выйти</a>)
 				
 			</div>
 		
@@ -34,17 +37,10 @@
 		<div id="bosmenu"></div>
 	</div>
 	<div id="bd">
-		<div id="pages">
-			<div id="home">
-					<div class="firstwaitpanel">
-						Идет загрузка. <br />Пожалуйста, подождите...<br />
-						<img src="/images/loading_line.gif" />
-					</div>
-			</div>
-		</div>
+		<div id="pages"></div>
 	</div>
 	<div id="ft">
-		<div class="abricos"><a href="http://abricos.org">Работает на Abricos</a></div>
+		<div class="abricos"><a href="http://abricos.org" target="_blank">Работает на платформе Абрикос</a></div>
 	</div>
 </div>
 

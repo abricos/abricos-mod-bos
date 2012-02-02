@@ -1,6 +1,6 @@
 /*
 @version $Id$
-@copyright Copyright (C) 2008 Abricos All rights reserved.
+@copyright Copyright (C) 2011 Abricos All rights reserved.
 @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
@@ -14,29 +14,26 @@ Component.requires = {
 	yahoo: ['dom', 'history'],
 	mod:[
 	     {name: 'sys', files: ['container.js']},
-	     {name: 'user', files: ['permission.js']}
+	     {name: 'user', files: ['permission.js']},
+	     {name: 'uprofile', files: ['lib.js']}
 	]
 };
-Component.entryPoint = function(){
+Component.entryPoint = function(NS){
 	var Dom = YAHOO.util.Dom,
 		E = YAHOO.util.Event,
 		L = YAHOO.lang,
 		H = YAHOO.util.History;
 
-	var NS = this.namespace,
-		API = NS.API,
-		TMG = this.template;
+	var _isGlobalRunStatus = false;
+	
+	var buildTemplate = this.buildTemplate;
 	
 	NS.logout = function(){
 		Brick.f('user', 'api', 'userLogout', function(){
 			Brick.Page.reload();
 		});
 	};
-	
-	var buildTemplate = function(w, templates){
-		var TM = TMG.build(templates), T = TM.data, TId = TM.idManager;
-		w._TM = TM; w._T = T; w._TId = TId;
-	};
+	var _globalPageIdInc = 1;
 
 	var BrickPanel = Brick.widget.Panel;
 	var Panel = function(config){
@@ -47,40 +44,47 @@ Component.entryPoint = function(){
 	        return;
 		}
 		
-		if (L.isNull(Workspace.instance.declaredKey)){
-			alert('Can`t register page in BosUI. DeclaredKey is null');
-			return;
-		}
-		
 		this.init(config);
 	};
 	Panel.prototype = {
 		init: function(config){
-			var info = Workspace.instance.registerPage(this),
-				elPage = info['elPage'];
-			elPage.innerHTML = (config.template || this.initTemplate());
-			this._wPageInfo = info;
 			
-			var res = Dom.getElementsByClassName('bd', 'div', elPage);
+			this.id = 'bospage' + _globalPageIdInc++;
+			
+			var container = Workspace.instance.registerPage(this);
+			
+			container.innerHTML = (config.template || this.initTemplate());
+			this._wPageContainer = container;
+			this._isDestroy = false;
+			
+			var res = Dom.getElementsByClassName('bd', 'div', container);
 			if (res && res.length >= 1){
 				this.body = res[0];
 			}
+			
+			var header = Dom.getElementsByClassName('hd', 'div', container);
+			if (header && res.length >= 1){
+				this.header = header[0];
+			}			
 
 			this.onLoad();
-			
-			Workspace.instance.showPage(info['key']);
-			this.onShow();
 		},
 		onLoad: function(){},
 		onShow: function(){},
-		destroy: function(){},
+		destroy: function(){
+			this._isDestroy = true;
+		},
+		isDestroy: function(){ return this._isDestroy; },
 		onClick: function(el){ return false; },
 		onResize: function(rel){},
 		close: function(){
 			this.destroy();
-			var elPage = this._wPageInfo['elPage'];
+			this._isDestroy = true;
+			
+			var elPage = this._wPageContainer;
 			elPage.parentNode.removeChild(elPage);
-			Workspace.instance.closePage(this._wPageInfo['key']);
+			
+			Workspace.instance.closePageMethod(this);
 		}
 	};
 	NS.Panel = Panel;
@@ -166,6 +170,14 @@ Component.entryPoint = function(){
 		this.titleId = "mod."+moduleName+'.app.title';
 		
 		/**
+		 * Путь к надписи в виде массива в менеджере фраз. Например: ['mod', 'user', 'app', 'title']
+		 * @property titleId
+		 * @type String
+		 * @default ['mod', <i>moduleName</i>, 'app', 'title']
+		 */
+		this.titlePath = ['mod', moduleName, 'app', 'title'];
+		
+		/**
 		 * Путь к иконке
 		 * @property icon
 		 * @type String
@@ -210,7 +222,12 @@ Component.entryPoint = function(){
 		 * @return {String}  
 		 */
 		this.getTitle = function(){
-			var phrase = Brick.util.Language.getc(this.titleId);
+			var phrase = Brick.util.Language.geta(this.titlePath);
+			if (L.isString(phrase)){
+				return phrase;
+			}
+			
+			phrase = Brick.util.Language.getc(this.titleId);
 			if (L.isString(phrase)){
 				return phrase;
 			}
@@ -226,6 +243,10 @@ Component.entryPoint = function(){
 		// зарегистрировать приложение
 		this.register = function(app){
 			apps[apps.length] = app;
+			
+			if (!L.isNull(Workspace.instance) && Workspace.instance.firstRender){
+				Workspace.instance.renderApp(app);
+			}
 		};
 		
 		this.each = function(func){
@@ -307,6 +328,74 @@ Component.entryPoint = function(){
         return null;
     };
 
+    var ActivePanelWidget = function(container, owner){
+    	this.init(container, owner);
+    };
+    ActivePanelWidget.prototype = {
+    	init: function(container, owner){
+    		this.owner = owner;
+    		buildTemplate(this, 'activepanel');
+    		var TM = this._TM;
+    		container.innerHTML = TM.replace('activepanel');
+    		
+    		var elSelect = TM.getEl('activepanel.table');
+    		
+			E.on(elSelect, "change", function (evt) {
+				var page = owner.getPageByPanel(elSelect.value);
+				if (!L.isNull(page) && page.panel && page.panel._bosOpenedKey){
+					Brick.Page.reload("#app="+page.panel._bosOpenedKey);
+				}else{
+					owner.showPage(elSelect.value);
+				}
+			});
+			
+    		var __self = this;
+			E.on(container, "click", function (evt) {
+				var el = E.getTarget(evt);
+				if (__self.onClick(el)){ E.preventDefault(evt); }
+			});
+    	},
+    	onClick: function(el){
+    		var TM = this._TM;
+    		if (TM.getEl('activepanel.bclose').id == el.id){
+    			this.owner.closePage(TM.getEl('activepanel.table').value);
+    		}
+    		return false;
+    	},
+    	setPage: function(page){
+			var panel = page.panel,
+				TM = this._TM,
+				elSelect = TM.getEl('activepanel.table'),
+				elOptionId = elSelect.id+panel.id,
+				elOption = Dom.get(elOptionId);
+			
+			if (L.isNull(elOption)){
+				elOption = document.createElement('option');
+				elOption.value = panel.id;
+				elOption.id = elOptionId;
+				elOption.innerHTML = panel.header.innerHTML;
+				elSelect.appendChild(elOption);
+			}
+			elSelect.value = panel.id;
+			TM.getEl('activepanel.tl').innerHTML = panel.header.innerHTML;
+			
+			var elMflag = TM.getEl('activepanel.mflag');
+			var cntp = this.owner.pages.length;
+			if (cntp > 1){
+				Dom.addClass(elMflag, 'mflag');
+			}else{
+				Dom.removeClass(elMflag, 'mflag');
+			}
+    	},
+    	removePage: function(page){
+    		var TM = this._TM,
+    			elSelect = TM.getEl('activepanel.table'),
+    			elOption = Dom.get(elSelect.id+page.panel.id);
+    		
+    		elSelect.removeChild(elOption);
+    		TM.getEl('activepanel.tl').innerHTML = '';
+    	}
+    };
 	
 	var Workspace = function(){
 		this.init();
@@ -317,17 +406,15 @@ Component.entryPoint = function(){
 		init: function(){
 			Workspace.instance = this;
 			
-			this.selectedKey = 'home';
+			this.selectedPage = null;
 			
 			this.elementLabelList = null;
 			
-			var TM = TMG.build('menulist,menuitem,page,labellist,label'), T = TM.data, TId = TM.idManager;
-			this._T = T; this._TId = TId; this._TM = TM;
+			buildTemplate(this, 'page,labellist,label');
 			
-			var container = Dom.get("home");
-			this.container = container;
+			this.activePanelWidget = new ActivePanelWidget(Dom.get('activepanel'), this);
 			
-			this.pages = [{'key': 'home', 'element': container, 'panel': null}];
+			this.pages = [];
 			
 			var list = [];
 			// сформировать список модулей имеющих компонент 'app' в наличие
@@ -347,7 +434,7 @@ Component.entryPoint = function(){
 			}else{
 				__self.render(); 
 			}
-			
+
 			var elBd = Dom.get('bd');
 			
 			E.on(elBd, "click", function (evt) {
@@ -412,37 +499,57 @@ Component.entryPoint = function(){
 			}
 		},
 		
+		onClickActivePanel: function(el){
+			if (L.isNull(this.selectedPage)){ return false; }
+			
+			if (el.id == 'bcloseactivepanel'){
+				return true;
+			}
+			return false;
+		},
+		
+		
+		renderApp: function(app){
+			var TM = this._TM,
+				mod = app.moduleName,
+				am = mod.split('/');
+			
+			if (am.length == 2){
+				var ah = am[0].split(':'),
+					port = 80;
+				if (ah.length == 2 && ah[1]*1 > 0){
+					port = ah[1]*1;
+				}
+				mod = ah[0]+"\t"+port+"\t"+am[1];
+			}
+			
+			mod = encodeURIComponent(mod);
+			
+			TM.getEl('labellist.id').innerHTML += TM.replace('label', {
+				'id': app.id,
+				'mod': mod,
+				'comp': app.entryComponent,
+				'name': app.moduleName+'-'+app.entryComponent,
+				'page': app.entryPoint,
+				'icon': app.icon,
+				'title': app.getTitle()
+			});
+		},
+		
 		render: function(){
-			var __self = this, lst = "", TM = this._TM, lst1 = "";
+			this.firstRender = true;
+			
+			var __self = this, TM = this._TM;
 			
 			NS.ApplicationManager.startupEach(function(f){
 				f();
 			});
 			
+			Dom.get('bosmenu').innerHTML = TM.replace('labellist', {'list': ""});
+			
 			NS.ApplicationManager.each(function(app){
-				lst += TM.replace('menuitem', {
-					'id': app.id,
-					'mod': app.moduleName,
-					'comp': app.entryComponent,
-					'page': app.entryPoint,
-					'icon': app.icon,
-					'title': app.getTitle()
-				});
-				
-				lst1 += TM.replace('label', {
-					'id': app.id,
-					'mod': app.moduleName,
-					'comp': app.entryComponent,
-					'name': app.moduleName+'-'+app.entryComponent,
-					'page': app.entryPoint,
-					'icon': app.icon,
-					'title': app.getTitle()
-				});
+				__self.renderApp(app);
 			});
-			
-			this.container.innerHTML = TM.replace('menulist', {'rows': lst});
-			
-			Dom.get('bosmenu').innerHTML = TM.replace('labellist', {'list': lst1});
 			
 			this.elementLabelList = TM.getEl('labellist.id');
 
@@ -454,6 +561,8 @@ Component.entryPoint = function(){
 			YAHOO.util.History.initialize("yui-history-field", "yui-history-iframe");
 			if (bookmarkedSection != "home"){
 				this.navigate(bookmarkedSection);
+			}else{
+	            this.navigate('bos/home/showHomePanel');
 			}
 			
 			NS.ApplicationManager.startupAfterEach(function(f){
@@ -467,24 +576,35 @@ Component.entryPoint = function(){
 				comp = arr[1] || '',
 				page = arr[2] || '',
 				prm1 = arr[3] || '', prm2=arr[4]||'', prm3=arr[5]||'', prm4=arr[6]||'', prm5=arr[7]||'';
-
-			if (this.pageExist(key)){
-				this.showPage(key);
+			
+			var am = decodeURIComponent(mod).split("\t");
+			if (am.length == 3){
+				mod = am[0];
+				if (am[1]*1 != 80){
+					mod += ":"+am[1];
+				}
+				mod += "/"+am[2];
+			}
+			
+			if (!Brick.componentExists(mod, comp)){
 				return; 
 			}
-			if (!Brick.componentExists(mod, comp)){ return; }
 			
-			this.declaredKey = key;
+			var __self = this;
 			
 			NS.wait.show();
 			var fire = function(){
-				
+				_isGlobalRunStatus = true;
 				NS.wait.hide();
-				
 				var fn = Brick.mod[mod]['API'][page];
 				if (!L.isFunction(fn)){ return; }
 				
-				fn(prm1, prm2, prm3, prm4, prm5);
+				var panel = fn(prm1, prm2, prm3, prm4, prm5);
+				if (panel && !L.isNull(panel) && panel.id != ""){
+					panel._bosOpenedKey = key;
+					__self.showPage(panel);
+				}
+				_isGlobalRunStatus = false;
 			};
 			
 			if (!Brick.componentLoaded(mod, comp)){
@@ -496,44 +616,97 @@ Component.entryPoint = function(){
 			}
 		},
 		
+		// создать страницу контейнер в bosui и отдать его панели для отображения
 		registerPage: function(panel){
-			var key = this.declaredKey,
-				div = document.createElement('div');
+			var div = document.createElement('div');
+			
 			div.innerHTML = this._TM.replace('page', {
-				'id': key.replace(/\//g, '-')
+				'id': panel.id
 			});
 			var elPage = div.childNodes[0];
 			Dom.get('pages').appendChild(elPage);
-			this.declaredKey = null;
 
-			this.addPage(key, elPage, panel);
-			return {'elPage': elPage, 'key': key};
-		},
-		
-		addPage: function(key, element, panel){
-			if (this.pageExist(key)){ return; }
 			var ps = this.pages;
-			ps[ps.length] = {'key': key, 'element': element, 'panel': panel};
+			ps[ps.length] = {'element': elPage, 'panel': panel};
+			
+			return elPage;
 		},
 		
-		closePage: function(key){
-			var page = this.getPage(key);
-			
-			var ps = this.pages,
+		getPage: function(id){
+			var ps = this.pages;
+			for (var i=0;i<ps.length;i++){
+				if (ps[i]['panel'].id == id){
+					return ps[i];
+				}
+			}
+			return null;
+		},
+		
+		closePage: function(panel){
+			var page = this.getPageByPanel(panel);
+			if (L.isNull(page)){ return; }
+			page.panel.close();
+		},
+		
+		closePageMethod: function(panel){
+			var page = this.getPageByPanel(panel);
+			if (L.isNull(page)){ return; }
+			var ps = this.pages, 
 				nps = [];
-			for (var i in ps){
-				if (ps[i]['key'] != key){
+			for (var i=0;i<ps.length;i++){
+				if (ps[i].panel.id != page.panel.id){
 					nps[nps.length] = ps[i];
 				}
 			}
 			this.pages = nps;
-			if (this.prevDeclareKey == key){
-				this.prevDeclareKey = "home";
+			this.selectedPage = null;
+			this.activePanelWidget.removePage(page);
+			
+			if (nps.length > 0){
+				var lastPanel = nps[nps.length-1].panel;
+				if (lastPanel._bosOpenedKey && !_isGlobalRunStatus){
+					Brick.Page.reload("#app="+lastPanel._bosOpenedKey);
+				}
 			}
-			H.navigate("app", this.prevDeclareKey);
+		},
+		
+		getPageByPanel: function(panel){
+			if (L.isString(panel)){
+				var page = this.getPage(panel);
+				if (!L.isNull(page)){
+					panel = page['panel'];
+				}else{ return null; }
+			}
+			
+			if (!panel || L.isNull(panel) || !panel.id){ return null; }
+			
+			return this.getPage(panel.id);
 		},
 
-		showPage: function(key){
+		showPage: function(panel){
+			var page = this.getPageByPanel(panel);
+			if (L.isNull(page)){ return; }
+			
+			if (this.selectedPage == page){ return; }
+			
+			var curPage = this.selectedPage;
+			
+			var ps = this.pages;
+			for (var i=0;i<ps.length;i++){
+				Dom.setStyle(ps[i]['element'], 'display', 'none');
+			}
+			Dom.setStyle(page['element'], 'display', '');
+			
+			this.selectedPage = page;
+			page.panel.onShow();
+			
+			this.activePanelWidget.setPage(page);
+			
+			return;
+			
+			/*
+
+			
 			if (this.selectedKey == key){ return; }
 			
 			this.prevDeclareKey = this.selectedKey;
@@ -568,18 +741,7 @@ Component.entryPoint = function(){
 				
 				Dom.setStyle(e1, 'display', 'none');
 				Dom.setStyle(e2, 'display', '');
-				/*
-				var wait = new WaitPanel();
-				setTimeout(function(){
-					
-					Dom.setStyle(e1, 'display', 'none');
-					Dom.setStyle(e2, 'display', '');
-
-					setTimeout(function(){
-						wait.close();
-					}, 300);
-				}, 300);
-				/**/
+				
 			}else{
 
 				// эффект перелистывания
@@ -630,25 +792,12 @@ Component.entryPoint = function(){
 				}, 10);
 								
 			}
-		},
-		
-		pageExist: function(key){
-			return !L.isNull(this.getPage(key));
-		},
-		
-		getPage: function(key){
-			var ps = this.pages;
-			for (var i in ps){
-				if (ps[i]['key'] == key){
-					return ps[i];
-				}
-			}
-			return null;
+		/**/
 		}
 	};
 	NS.Workspace = Workspace;
 	
-	API.buildWorkspace = function(){
+	NS.API.buildWorkspace = function(){
 		Brick.Permission.load(function(){
 			new NS.Workspace();
 		});
