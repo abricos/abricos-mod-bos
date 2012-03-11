@@ -1,36 +1,6 @@
 <!--{page}--><div id="{i#id}-{v#id}" class="page" style="display: none;"></div>
 
-<!--{waitpanel}-->
-<div class='hd'></div>
-<div class='bd'>
-	<div style="text-align: center; height: 70px;" >
-		<br />
-		Идет загрузка. <br />
-		Пожалуйста, подождите...<br />
-		<img src="/images/loading_line.gif" />
-	</div>
-</div>
+<!--{history}-->
+<iframe id="yui-history-iframe" src="/modules/bos/tt/blank.html"></iframe>
+<input id="yui-history-field" type="hidden" />
 
-<!--{labellist}-->
-<div id="{i#id}" class="bosmenu">{v#list}</div>
-<div style="clear: both;"></div>
-
-<!--{label}-->
-<a id="label-{v#name}-{i#id}" class="label" href="#app={v#mod}/{v#comp}/{v#page}">
-	<span class="aligner">
-		<img src="{v#icon}" />
-		<span>{v#title}</span>
-	</span>
-</a>
-
-<!--{activepanel}-->
-<div id="{i#mflag}">
-	<div id="{i#tl}" class="tl"></div>
-	<div id="{i#more}" class="more">(еще...)</div>
-	<div class="clear"></div>
-	<div class="act">
-		<select id="{i#table}"></select>
-		<div id="{i#bclose}" class="bclose" title="Закрыть">&nbsp;</div>
-		<div class="clear"></div>
-	</div>
-</div>
