@@ -232,4 +232,6 @@ Component.entryPoint = function(NS){
 	NS.ApplicationManager = ApplicationManager;	
 
 	
+	
+	
 };

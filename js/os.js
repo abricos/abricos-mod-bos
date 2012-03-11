@@ -45,7 +45,7 @@ Component.entryPoint = function(NS){
 			
 			this.id = 'bospage' + _globalPageIdInc++;
 			
-			var container = NS.Workspace.instance.pageManagerWidget.registerPage(this);
+			var container = NS.Workspace.instance.registerPage(this);
 			
 			container.innerHTML = (config.template || this.initTemplate());
 			this._wPageContainer = container;
@@ -78,7 +78,7 @@ Component.entryPoint = function(NS){
 			var elPage = this._wPageContainer;
 			elPage.parentNode.removeChild(elPage);
 			
-			NS.Workspace.instance.pageManagerWidget.closePageMethod(this);
+			NS.Workspace.instance.closePageMethod(this);
 		}
 	};
 	NS.Panel = Panel;
@@ -117,13 +117,18 @@ Component.entryPoint = function(NS){
     };
 
 	
-	var PageManagerWidget = function(container){
-		this.init(container);
+	var PageManagerWidget = function(container, defpage){
+		this.init(container, defpage);
 	};
 	PageManagerWidget.prototype = {
 		
-		init: function(container){
+		init: function(container, defpage){
 			this.container = container;
+			this.defpage = defpage || 'bos/home/showHomePanel';
+			
+			container.innerHTML = "";
+			
+			Workspace.instance = this;
 			
 			this.pageShowEvent = new YAHOO.util.CustomEvent('pageShowEvent');
 			this.pageRemoveEvent = new YAHOO.util.CustomEvent('pageRemoveEvent');
@@ -134,8 +139,6 @@ Component.entryPoint = function(NS){
 			
 			this.pages = [];
 
-			// var elBd = Dom.get('bd');
-			
 			E.on(container, "click", function (evt) {
 				var el = E.getTarget(evt);
 				
@@ -187,7 +190,7 @@ Component.entryPoint = function(NS){
 			if (bookmarkedSection != "home"){
 				this.navigate(bookmarkedSection);
 			}else{
-	            this.navigate('bos/home/showHomePanel');
+	            this.navigate(this.defpage);
 			}
             
 		},
@@ -365,13 +368,13 @@ Component.entryPoint = function(NS){
 	Workspace.instance = null;
 	Workspace.prototype = {
 		init: function(){
-			Workspace.instance = this;
 		
 			this.activePanelWidget = new NS.PageListWidget(Dom.get('activepanel'), this);
 			this.labelListWidget = new NS.LabelListWidget(Dom.get('bosmenu'));
 			
 			this.pageManagerWidget = new NS.PageManagerWidget(Dom.get('pages'));
 			this.pageManagerWidget.pageShowEvent.subscribe(this.onPageShow, this, true);
+
 			
 			var __self = this;
             E.on(window, "resize", function(event){

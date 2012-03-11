@@ -26,8 +26,10 @@ Component.entryPoint = function(NS){
     var LabelListWidget = function(container){
     	this.init(container);
     };
+    LabelListWidget.instance = null;
     LabelListWidget.prototype = {
     	init: function(container){
+    		LabelListWidget.instance = this;
     		
     		var TM = buildTemplate(this, 'labellist,label');
     		container.innerHTML = TM.replace('labellist', {'list': ''});
