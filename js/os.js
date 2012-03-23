@@ -54,11 +54,14 @@ Component.entryPoint = function(NS){
 			var res = Dom.getElementsByClassName('bd', 'div', container);
 			if (res && res.length >= 1){
 				this.body = res[0];
+				Dom.removeClass(this.body, 'bd');
 			}
 			
 			var header = Dom.getElementsByClassName('hd', 'div', container);
 			if (header && res.length >= 1){
 				this.header = header[0];
+				Dom.removeClass(this.header, 'hd');
+				Dom.setStyle(this.header, 'display', 'none');
 			}			
 
 			this.onLoad();
