@@ -195,7 +195,13 @@ Component.entryPoint = function(NS){
 			}else{
 	            this.navigate(this.defpage);
 			}
-            
+		},
+		
+		destroy: function(){
+			var ps = this.pages;
+			for (var i=0;i<ps.length;i++){
+				ps[i]['panel'].close();
+			}
 		},
 		
 		navigate: function(key){
