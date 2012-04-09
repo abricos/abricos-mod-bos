@@ -27,6 +27,14 @@ class BosManager extends Ab_ModuleManager {
 	}
 	
 	private function _AJAX($modname, $data){
+		if ($modname == "bos"){
+			switch ($data->do){
+				case 'online':
+					return $this->Online($data->mods);
+			}
+			return null;
+		}
+		
 		$module = Abricos::GetModule($modname);
 		if (empty($module)){ 
 			return null; 
@@ -39,6 +47,27 @@ class BosManager extends Ab_ModuleManager {
 		$ret = new stdClass();
 		$ret->u = $this->userid;
 		$ret->r = $this->_AJAX($d->nm, $d->d);
+		
+		return $ret;
+	}
+	
+	public function Online($mods){
+		$ret = array();
+		
+		foreach ($mods as $name){
+			$mod = Abricos::GetModule($name);
+			$manager = $mod->GetManager();
+			
+			if (!method_exists($manager, 'Bos_OnlineData')){
+				continue;
+			}
+			
+			$r = new stdClass();
+			$r->n = $name;
+			$r->d = $manager->Bos_OnlineData();
+			
+			array_push($ret, $r);
+		}
 		
 		return $ret;
 	}

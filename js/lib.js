@@ -231,7 +231,31 @@ Component.entryPoint = function(NS){
 	});
 	NS.ApplicationManager = ApplicationManager;	
 
+	var OnlineWidget = function(container, rs){
+		this.init(container, rs);
+	};
+	OnlineWidget.prototype = {
+		init: function(container, rs){},
+		destroy: function(){}
+	};
+	NS.OnlineWidget = OnlineWidget;
 	
 	
+	var OnlineManager = function(){
+		this.init();
+	};
+	OnlineManager.prototype = {
+		init: function(){
+			this.ws = {};
+		},
+		register: function(modName, widget){
+			this.ws[modName] = widget;
+		},
+		get: function(modName){
+			return this.ws[modName];
+		}
+	};
+	NS.OnlineManager = OnlineManager;
+	NS.onlineManager = new OnlineManager();
 	
 };
