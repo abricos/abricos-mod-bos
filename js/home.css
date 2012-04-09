@@ -28,9 +28,16 @@
 	margin-bottom: 10px;
 }
 .aw-bos .home table.online .onlhd {
+	position: relative;
 	background-color: #E3E3D7;
 	border-bottom: 1px solid #8C8D8E;
 	padding: 4px 7px;
+}
+
+.aw-bos .home table.online a.onlrss {
+	position: absolute;
+	right: 4px;
+	top: 4px;
 }
 
 .aw-bos .home table.online .onlbd {
@@ -41,7 +48,9 @@
 	margin: 5px;
 	text-align: right;
 }
-
+.aw-bos .home table.online .item {
+	line-height: 1.5em;
+}
 .aw-bos .home table.online a {
 	text-decoration: none;
 }

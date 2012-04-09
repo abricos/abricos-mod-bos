@@ -18,9 +18,12 @@ $fnm = $user['firstname'];
 
 $username = empty($lnm) && empty($fnm) ? $unm : $fnm."&nbsp;".$lnm;
 
+$modRSS = Abricos::GetModule('rss');
+
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
 	"userid" => $user['userid'],
-	"username" => $username
+	"username" => $username,
+	"rss" => (!empty($modRSS) ? $brick->param->var['rss'] : "")
 ));
  
 ?>

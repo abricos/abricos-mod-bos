@@ -190,6 +190,12 @@ a:active, a:visited {
 	padding-bottom: 0.5em;
 }
 
+#bos #hd .main-rss {
+	padding-left: 10px;
+	width: 21px;
+	vertical-align: middle;
+}
+
 #userblock {
 	color:#666666;
 	text-align: left;

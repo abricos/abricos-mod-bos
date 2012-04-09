@@ -1,5 +1,12 @@
 <!--[*]
 [tt=main]_my[/tt]
+[bkvar=rss]
+	<td class="main-rss">
+		<a href="/rss/bos/" title="Подписаться на RSS" target="_blank">
+			<img src="/modules/rss/images/rss-icon-16px-op50.gif" />
+		</a>
+	</td>
+[/bkvar]
 [script]index.php[/script]
 [*]-->
 
@@ -19,10 +26,11 @@
 				<a href="#" class="show-user-profile user-{v#userid}" title="Открыть мою страницу">{v#username}</a>
 				<a id="myprofileedit" href="/user/" class="show-user-profile user-{v#userid}" title="Редактировать профиль">ред.</a> 
 				(<a href="#" onclick="Brick.mod.bos.logout(); return false;" >выйти</a>)
-				
 			</div>
-		
 		</td>
+		
+		{v#rss}
+		
 		</tr></tbody></table>
 		<div id="bosmenu"></div>
 	</div>

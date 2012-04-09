@@ -17,7 +17,7 @@ class BosModule extends Ab_Module {
 	 */
 	public function __construct(){
 		// Версия модуля
-		$this->version = "0.1.3";
+		$this->version = "0.1.4";
 		
 		// Название модуля
 		$this->name = "bos";
@@ -37,9 +37,7 @@ class BosModule extends Ab_Module {
 		return $this->_manager;
 	}
 	
-	
 	public function GetContentName(){
-		
 		if (Abricos::$user->id == 0){
 			return "index_guest";
 		}
@@ -49,8 +47,18 @@ class BosModule extends Ab_Module {
 			$this->registry->adress->dir[0] == 'upload'){
 			$cname = 'upload';
 		}
-		
 		return $cname;
+	}
+	
+	public function GetLink(){
+		return $this->registry->adress->host."/".$this->takelink."/";
+	}
+	
+	public function RSS_GetItemList(){
+		$mod = Abricos::GetModule('rss');
+		$onemod = $this->registry->adress->dir[2];
+		
+		return $mod->RSS_GetItemListAll(true, $onemod);
 	}
 }
 
