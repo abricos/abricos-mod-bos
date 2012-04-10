@@ -19,11 +19,14 @@ Component.entryPoint = function(NS){
 	
 	var buildTemplate = this.buildTemplate;
 	
-	var HomeItemWidget = function(container, Widget, rs){
-		this.init(container, Widget, rs);
+	var HomeItemWidget = function(container, Widget, rs, numcol){
+		this.init(container, Widget, rs, numcol);
 	};
 	HomeItemWidget.prototype = {
-		init: function(container, Widget, rs){
+		init: function(container, Widget, rs, numcol){
+			
+			this.numcol = numcol;
+			
 			var TM = buildTemplate(this, 'item');
 			
 			var div = document.createElement('div');
@@ -31,6 +34,10 @@ Component.entryPoint = function(NS){
 			
 			container.appendChild(div.childNodes[0]);
 			this.widget = new Widget(TM.getEl('item.widget'), rs);
+		},
+		getRegion: function(){
+			var el = this._TM.getEl('item.id');
+			return Dom.getRegion(el);
 		}
 	};
 	NS.HomeItemWidget = HomeItemWidget;
@@ -97,7 +104,6 @@ Component.entryPoint = function(NS){
 			if (L.isNull(d) || (L.isArray(d) && d.length == 0)){
 				showUProfile();
 			}else{
-				this._flagTCol = false;
 				for (var i=0;i<d.length;i++){
 					this.renderWidget(d[i]);
 				}
@@ -118,13 +124,25 @@ Component.entryPoint = function(NS){
 				if (!L.isArray(rs) || rs.length == 0){ return; }
 			}
 			
-			var TM = this._TM;
+			var TM = this._TM, ws = this.ws;
 			Dom.setStyle(TM.getEl('panel.loading'), 'display', 'none');
 			
-			var elc = TM.getEl('panel.col'+(!this._flagTCol ? '1' : '2'));
-			this._flagTCol = !this._flagTCol;
-			this.ws[this.ws.length] = 
-				new HomeItemWidget(elc, W, di['d']);
+			var h1 = 0, h2 = 0;
+			
+			for (var i=0;i<ws.length;i++){
+				var w = ws[i], rg = w.getRegion();
+				if (w.numcol == 1){
+					h1 += rg.height;
+				}else{
+					h2 += rg.height;
+				}
+			}
+			
+			var numcol = h1<=h2 ? 1 : 2;
+			var elc = TM.getEl('panel.col'+numcol);
+			
+			ws[ws.length] = 
+				new HomeItemWidget(elc, W, di['d'], numcol);
 		}
 	});
 	NS.HomePanel = HomePanel;
