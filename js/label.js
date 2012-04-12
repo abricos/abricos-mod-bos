@@ -23,12 +23,19 @@ Component.entryPoint = function(NS){
 
 	var buildTemplate = this.buildTemplate;
 
-    var LabelListWidget = function(container){
-    	this.init(container);
+    var LabelListWidget = function(container, cfg){
+    	cfg = L.merge({
+    		'startupBeforeEventDisable': false,
+    		'startupAfterEventDisable': false,
+    		'uriPrefix': ''
+    	}, cfg || {});
+    	this.init(container, cfg);
     };
     LabelListWidget.instance = null;
     LabelListWidget.prototype = {
-    	init: function(container){
+    	init: function(container, cfg){
+    		this.cfg = cfg;
+    		
     		LabelListWidget.instance = this;
     		
     		var TM = buildTemplate(this, 'labellist,label');
@@ -59,7 +66,8 @@ Component.entryPoint = function(NS){
 		renderLabel: function(app){
 			var TM = this._TM,
 				mod = app.moduleName,
-				am = mod.split('/');
+				am = mod.split('/'), 
+				cfg = this.cfg;
 			
 			if (am.length == 2){
 				var ah = am[0].split(':'),
@@ -74,6 +82,7 @@ Component.entryPoint = function(NS){
 			
 			TM.getEl('labellist.id').innerHTML += TM.replace('label', {
 				'id': app.id,
+				'uripfx': cfg['uriPrefix'],
 				'mod': mod,
 				'comp': app.entryComponent,
 				'name': app.moduleName+'-'+app.entryComponent,
@@ -84,10 +93,12 @@ Component.entryPoint = function(NS){
 		},
 		
     	onLoadLabels: function(){
-
-			NS.ApplicationManager.startupEach(function(f){
-				f();
-			});
+    		var cfg = this.cfg;
+    		if (!cfg['startupBeforeEventDisable']){
+    			NS.ApplicationManager.startupEach(function(f){
+    				f();
+    			});
+    		}
 			
 			var __self = this;
 			
@@ -95,11 +106,13 @@ Component.entryPoint = function(NS){
 				__self.renderLabel(app);
 			});
 			
-			NS.ApplicationManager.startupAfterEach(function(f){
-				f();
-			});
+			if (!cfg['startupAfterEventDisable']){
+				NS.ApplicationManager.startupAfterEach(function(f){
+					f();
+				});
+			}
     	}
     };
     NS.LabelListWidget = LabelListWidget;
-
+    
 };

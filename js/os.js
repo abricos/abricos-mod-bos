@@ -12,7 +12,6 @@
 var Component = new Brick.Component();
 Component.requires = {
 	mod:[
-	     {name: 'user', files: ['permission.js']},
 	     {name: 'bos', files: ['label.js', 'pagelist.js']},
 	     {name: 'uprofile', files: ['lib.js']}
 	]

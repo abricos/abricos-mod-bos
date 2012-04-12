@@ -13,6 +13,7 @@ var Component = new Brick.Component();
 Component.requires = {
 	yahoo: ['dom', 'history'],
 	mod:[
+	     {name: 'user', files: ['permission.js']},
 	     {name: 'sys', files: ['container.js']}
 	]
 };

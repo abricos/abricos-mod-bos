@@ -1,0 +1,31 @@
+.aw-bos .bosmenu .label {
+	float: left;
+	font-size:11px;
+	cursor:pointer;
+	color:#000; 
+	text-align:center; 
+	width:80px; 
+	height:67px;
+	margin: 14px 5px 15px 0;
+}
+
+.aw-bos .bosmenu .label .aligner {
+	margin: auto;
+}
+.aw-bos .bosmenu .label img {
+	margin: 0 auto;
+	display: block;
+	width:50px; 
+	height:50px;
+}
+.aw-bos .bosmenu .label span {
+	display: block;
+}
+
+.aw-bos .bosmenu a.label {
+	color: black;
+	text-decoration: none;
+}
+.aw-bos .bosmenu a.label:hover {
+	text-decoration: underline;
+}

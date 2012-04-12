@@ -130,33 +130,6 @@ a:active, a:visited {
 	margin-top: 4px;
 	border-top:1px solid #C82100; 
 }
-#bos #hd #bosmenu .label {
-	float: left;
-	font-size:11px;
-	cursor:pointer;
-	color:#000; 
-	text-align:center; 
-	width:80px; 
-	height:67px;
-	margin: 14px 5px 15px 0;
-}
-#bos #hd #bosmenu .label .aligner {
-	margin: auto;
-}
-#bos #hd #bosmenu .label img {
-	margin: 0 auto;
-	display: block;
-	width:50px; 
-	height:50px;
-}
-#bos #hd #bosmenu a.label {
-	color: black;
-	text-decoration: none;
-}
-#bos #hd #bosmenu a.label:hover {
-	text-decoration: underline;
-}
-
 
 #bos #bd {
 	min-height: 420px;
