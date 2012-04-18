@@ -111,6 +111,11 @@ a:active, a:visited {
 #bos #ft .abricos {
 	font-size: 0.9em;
 	text-align: right;
+	position: relative;
+}
+#bos #ft .abricos a.sitehome {
+	position: absolute;
+	left: 0; top: 0;
 }
 #bos #ft .abricos a {
 	color: #999999;
