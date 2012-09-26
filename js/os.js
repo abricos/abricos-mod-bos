@@ -21,6 +21,11 @@ Component.entryPoint = function(NS){
 		E = YAHOO.util.Event,
 		L = YAHOO.lang,
 		H = YAHOO.util.History;
+	
+	// IF IE disable dynamic CSS
+	if (YAHOO.env.ua.ie){
+		Brick.util.CSS.disableCSSComponent = true;
+	}
 
 	var _isGlobalRunStatus = false;
 	
@@ -47,6 +52,12 @@ Component.entryPoint = function(NS){
 			var container = NS.Workspace.instance.registerPage(this);
 			
 			container.innerHTML = (config.template || this.initTemplate());
+			
+			this.cfg = new YAHOO.util.Config(this);
+			if (config){
+                this.cfg.applyConfig(config, true);
+			}
+			
 			this._wPageContainer = container;
 			this._isDestroy = false;
 			
@@ -118,10 +129,11 @@ Component.entryPoint = function(NS){
         return null;
     };
 
-	
 	var PageManagerWidget = function(container, defpage){
+		PageManagerWidget.instance = this;
 		this.init(container, defpage);
 	};
+	PageManagerWidget.instance = null;
 	PageManagerWidget.prototype = {
 		
 		init: function(container, defpage){
@@ -393,7 +405,6 @@ Component.entryPoint = function(NS){
 		onPageShow: function(evt, prms){
 			this.activePanelWidget.setPage(prms[0]);
 		},
-		
 		_setWorkspaceSize: function(key){
 		}
 		
