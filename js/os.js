@@ -149,7 +149,7 @@ Component.entryPoint = function(NS){
 			
 			this.selectedPage = null;
 			
-			buildTemplate(this, 'page,history');
+			var TM = buildTemplate(this, 'page,history');
 			
 			this.pages = [];
 
@@ -188,8 +188,7 @@ Component.entryPoint = function(NS){
 				}
 			});
 			
-			var __self = this, TM = this._TM;
-			
+			var __self = this;
 
 			var bookmarkedSection = H.getBookmarkedState("app") || "home";
 			H.register("app", bookmarkedSection, function (key) {
@@ -382,15 +381,18 @@ Component.entryPoint = function(NS){
 	NS.PageManagerWidget = PageManagerWidget;
 
 	
-	var Workspace = function(){
-		this.init();
+	var Workspace = function(cfg){
+		cfg = L.merge({
+			'labels': {}
+		}, cfg || {});
+		this.init(cfg);
 	};
 	Workspace.instance = null;
 	Workspace.prototype = {
-		init: function(){
+		init: function(cfg){
 		
 			this.activePanelWidget = new NS.PageListWidget(Dom.get('activepanel'), this);
-			this.labelListWidget = new NS.LabelListWidget(Dom.get('bosmenu'));
+			this.labelListWidget = new NS.LabelListWidget(Dom.get('bosmenu'), cfg['labels']);
 			
 			this.pageManagerWidget = new NS.PageManagerWidget(Dom.get('pages'));
 			this.pageManagerWidget.pageShowEvent.subscribe(this.onPageShow, this, true);
@@ -411,9 +413,9 @@ Component.entryPoint = function(NS){
 	};
 	NS.Workspace = Workspace;
 	
-	NS.API.buildWorkspace = function(){
+	NS.API.buildWorkspace = function(cfg){
 		Brick.Permission.load(function(){
-			new NS.Workspace();
+			new NS.Workspace(cfg);
 		});
 	};
 	

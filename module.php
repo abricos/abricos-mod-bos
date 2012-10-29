@@ -10,6 +10,13 @@
  * @author Alexander Kuzmin (roosit@abricos.org)
  */
 
+/* 
+ 
+ // Отключить иконки приложений модулей 
+ $config['module']['bos']['labels']['disable'] = array("MODNAME");
+ 
+ */
+
 class BosModule extends Ab_Module {
 	
 	/**

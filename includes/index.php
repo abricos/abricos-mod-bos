@@ -20,9 +20,17 @@ $username = empty($lnm) && empty($fnm) ? $unm : $fnm."&nbsp;".$lnm;
 
 $modRSS = Abricos::GetModule('rss');
 
+$cfg = Abricos::$config['module']['bos'];
+
+$labelscfg = "{}";
+if (!empty($cfg['labels']) && !empty($cfg['labels']['disable']) && is_array($cfg['labels']['disable'])){
+	$labelscfg = json_encode($cfg['labels']);
+}
+
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
 	"userid" => $user['userid'],
 	"username" => $username,
+	"labelscfg" => $labelscfg,
 	"rss" => (!empty($modRSS) ? $brick->param->var['rss'] : "")
 ));
  

@@ -9,7 +9,6 @@
 [/bkvar]
 [script]index.php[/script]
 [*]-->
-
 <div id="bos" class="aw-bos">
 	<div id="hd">
 		<table style="width: 100%;"><tbody><tr>
@@ -47,6 +46,8 @@
 
 <script>
 	YAHOO.util.Event.onDOMReady(function () {
-		Brick.Component.API.fire('bos', 'os', 'buildWorkspace');
+		Brick.f('bos', 'os', 'buildWorkspace', {
+			'labels': {v#labelscfg}
+		});
 	});
 </script>

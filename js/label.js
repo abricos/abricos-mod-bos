@@ -25,6 +25,7 @@ Component.entryPoint = function(NS){
 
     var LabelListWidget = function(container, cfg){
     	cfg = L.merge({
+    		'disable': [],
     		'startupBeforeEventDisable': false,
     		'startupAfterEventDisable': false,
     		'uriPrefix': ''
@@ -68,6 +69,13 @@ Component.entryPoint = function(NS){
 				mod = app.moduleName,
 				am = mod.split('/'), 
 				cfg = this.cfg;
+			
+			if (L.isArray(cfg['disable'])){
+				var dis = cfg['disable'];
+				for (var i=0;i<dis.length;i++){
+					if (dis[i] == app.moduleName){ return; }
+				}
+			}
 			
 			if (am.length == 2){
 				var ah = am[0].split(':'),
