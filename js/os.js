@@ -219,7 +219,9 @@ Component.entryPoint = function(NS){
 				mod = arr[0],
 				comp = arr[1] || '',
 				page = arr[2] || '',
-				prm1 = arr[3] || '', prm2=arr[4]||'', prm3=arr[5]||'', prm4=arr[6]||'', prm5=arr[7]||'';
+				prm1 = arr[3] || '', prm2=arr[4]||'', prm3=arr[5]||'',
+				prm4=arr[6]||'', prm5=arr[7]||'', prm6=arr[8]||'', prm7=arr[9]||'',
+				prm8=arr[10]||'', prm9=arr[11]||'';
 			
 			var am = decodeURIComponent(mod).split("\t");
 			if (am.length == 3){
@@ -243,7 +245,7 @@ Component.entryPoint = function(NS){
 				var fn = Brick.mod[mod]['API'][page];
 				if (!L.isFunction(fn)){ return; }
 				
-				var panel = fn(prm1, prm2, prm3, prm4, prm5);
+				var panel = fn(prm1, prm2, prm3, prm4, prm5, prm6, prm7, prm8, prm9);
 				if (panel && !L.isNull(panel) && panel.id != ""){
 					panel._bosOpenedKey = key;
 					__self.showPage(panel);
