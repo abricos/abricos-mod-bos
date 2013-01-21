@@ -56,6 +56,9 @@ class BosManager extends Ab_ModuleManager {
 		
 		foreach ($mods as $name){
 			$mod = Abricos::GetModule($name);
+			if (!method_exists($mod, 'GetManager')){
+				continue;
+			}
 			$manager = $mod->GetManager();
 			
 			if (!method_exists($manager, 'Bos_OnlineData')){
