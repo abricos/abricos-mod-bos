@@ -1,6 +1,5 @@
 /*
-@version $Id: os.js 1413 2012-02-02 09:09:11Z roosit $
-@copyright Copyright (C) 2011 Abricos All rights reserved.
+@package Abricos
 @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 */
 
