@@ -1,6 +1,6 @@
 <?php 
 /**
- * Модуль Bos - интерфейс пользователя от компании Brickos (http://brickos.ru)
+ * Модуль Bos - интерфейс пользователя
  * 
  * @package Abricos 
  * @subpackage Bos
