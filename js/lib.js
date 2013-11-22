@@ -10,18 +10,16 @@
 
 var Component = new Brick.Component();
 Component.requires = {
-	yahoo: ['dom', 'history'],
 	mod:[
 	     {name: 'user', files: ['permission.js']},
 	     {name: 'sys', files: ['container.js']}
 	]
 };
 Component.entryPoint = function(NS){
-	var Dom = YAHOO.util.Dom,
-		E = YAHOO.util.Event,
-		L = YAHOO.lang,
-		H = YAHOO.util.History;
-
+	
+	var Y = Brick.YUI,
+		L = Y.Lang;
+	
 	var buildTemplate = this.buildTemplate;
 
 	var WaitPanel = function(){

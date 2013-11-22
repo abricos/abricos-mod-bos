@@ -10,16 +10,19 @@
 
 var Component = new Brick.Component();
 Component.requires = {
+	yui: ['history'],
 	mod:[
 	     {name: 'bos', files: ['label.js', 'pagelist.js']},
 	     {name: 'uprofile', files: ['lib.js']}
 	]
 };
 Component.entryPoint = function(NS){
+	
+	var Y = Brick.YUI,
+		L = Y.Lang;
+	
 	var Dom = YAHOO.util.Dom,
-		E = YAHOO.util.Event,
-		L = YAHOO.lang,
-		H = YAHOO.util.History;
+		E = YAHOO.util.Event;
 	
 	// IF IE disable dynamic CSS
 	if (YAHOO.env.ua.ie){
@@ -45,7 +48,6 @@ Component.entryPoint = function(NS){
 	};
 	Panel.prototype = {
 		init: function(config){
-			
 			this.id = 'bospage' + _globalPageIdInc++;
 			
 			var container = NS.Workspace.instance.registerPage(this);
@@ -104,9 +106,8 @@ Component.entryPoint = function(NS){
 	};
 	
     var getBookmarkedParameter = function (paramName, url) {
-
         var i, len, idx, queryString, params, tokens;
-
+        
         url = url || top.location.href;
         idx = url.indexOf("#");
         queryString = idx >= 0 ? url.substr(idx + 1) : url;
@@ -136,6 +137,7 @@ Component.entryPoint = function(NS){
 	PageManagerWidget.prototype = {
 		
 		init: function(container, defpage){
+			
 			this.container = container;
 			this.defpage = defpage || 'bos/home/showHomePanel';
 			
@@ -148,9 +150,11 @@ Component.entryPoint = function(NS){
 			
 			this.selectedPage = null;
 			
-			var TM = buildTemplate(this, 'page,history');
+			var TM = buildTemplate(this, 'page');
 			
 			this.pages = [];
+			
+			var history = new Y.HistoryHash();
 
 			E.on(container, "click", function (evt) {
 				var el = E.getTarget(evt);
@@ -164,9 +168,10 @@ Component.entryPoint = function(NS){
 					if (newApp){ // идентификатор приложения не пустой => выполняем его
 						E.preventDefault(evt);
 						
-						var currApp = H.getCurrentState("app", href);
+						var currApp = history.get('app');
 						if (newApp != currApp){
-							H.navigate("app", newApp);
+							history.addValue("app", newApp);
+							
 						}
 						return;
 					}
@@ -188,22 +193,17 @@ Component.entryPoint = function(NS){
 			});
 			
 			var __self = this;
-
-			var bookmarkedSection = H.getBookmarkedState("app") || "home";
-			H.register("app", bookmarkedSection, function (key) {
-				__self.navigate(key);
+			
+			var bkm = history.get('app') || "home";
+			
+			history.on('change', function(e){
+				var changed = e.changed;
+				if (changed['app']){
+					var newVal = changed['app'].newVal;
+					__self.navigate(newVal);
+				}
 			});
-			
-			var hstDiv = document.createElement('div');
-			hstDiv.innerHTML = TM.replace('history');
-			document.body.appendChild(hstDiv);
-			
-			YAHOO.util.History.initialize("yui-history-field", "yui-history-iframe");
-			if (bookmarkedSection != "home"){
-				this.navigate(bookmarkedSection);
-			}else{
-	            this.navigate(this.defpage);
-			}
+			this.navigate(bkm != "home" ? bkm : this.defpage);
 		},
 		
 		destroy: function(){
@@ -383,7 +383,7 @@ Component.entryPoint = function(NS){
 
 	
 	var Workspace = function(cfg){
-		cfg = L.merge({
+		cfg = Y.merge({
 			'labels': {}
 		}, cfg || {});
 		this.init(cfg);
