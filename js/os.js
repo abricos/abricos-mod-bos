@@ -25,7 +25,7 @@ Component.entryPoint = function(NS){
 		E = YAHOO.util.Event;
 	
 	// IF IE disable dynamic CSS
-	if (YAHOO.env.ua.ie){
+	if (Y.UA.ie > 0){
 		Brick.util.CSS.disableCSSComponent = true;
 	}
 
