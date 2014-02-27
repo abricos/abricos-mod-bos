@@ -2,3 +2,8 @@
   min-width: 300px;
   padding: 0 20px;
 }
+.dropdown-menu .mod-bos .user-login-form .panel {
+  margin-bottom: 0;
+  border: none;
+  -webkit-box-shadow: none;
+}
