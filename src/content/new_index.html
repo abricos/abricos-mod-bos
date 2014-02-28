@@ -1,0 +1,51 @@
+<!--[*]
+[tt=new_main]_my[/tt]
+[bkvar=rss]
+	<td class="main-rss">
+		<a href="/rss/bos/" title="{#content.index.1}" target="_blank">
+			<img src="/modules/rss/images/rss-icon-16px-op50.gif" />
+		</a>
+	</td>
+[/bkvar]
+[script]index.php[/script]
+[*]-->
+<div id="bos" class="aw-bos">
+	<div id="hd">
+		<table style="width: 100%;"><tbody><tr>
+		<td style="width: 21px">
+			<a href="#app=bos/home/showHomePanel" title="{#content.index.2}">
+				<img src="/modules/bos/images/homeicon.gif" />
+			</a>
+		</td>
+		<td>
+			<div id="activepanel"></div>
+		</td>
+		<td>
+			<div class="buser">
+				<a href="#" class="show-user-profile user-{v#userid}" title="{#content.index.3}">{v#username}</a>
+				<a id="myprofileedit" href="/user/" class="show-user-profile user-{v#userid}" title="{#content.index.4}">{#content.index.5}</a> 
+				(<a href="#" onclick="Brick.mod.bos.logout(); return false;" >{#content.index.6}</a>)
+			</div>
+		</td>
+		
+		{v#rss}
+		
+		</tr></tbody></table>
+		<div id="bosmenu"></div>
+	</div>
+	<div id="bd">
+		<div id="pages"></div>
+	</div>
+	<div id="ft">
+		<div class="abricos">
+			<a href="/" class="sitehome">{#content.index.7}</a>
+			<a href="http://abricos.org" target="_blank">{#content.index.8}</a>
+		</div>
+	</div>
+</div>
+
+<script>
+	Brick.f('bos', 'os', 'buildWorkspace', {
+		'labels': {v#labelscfg}
+	});
+</script>
