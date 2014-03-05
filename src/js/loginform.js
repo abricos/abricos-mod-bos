@@ -15,7 +15,23 @@ Component.entryPoint = function (NS) {
     var Y = Brick.YUI;
     var buildTemplate = this.buildTemplate;
 
+    var TPL = function () {
+        buildTemplate(this, 'bootstrap');
+    };
+    var tpl = new TPL();
 
+    var modal = new Y.MyPanel({
+            bodyContent: 'Modal body',
+            centered: true,
+            headerContent: 'Modal header',
+            modal: true,
+            render: '.example',
+            width: 450
+        }
+    );
+    modal.show();
+
+    /*
     var TEMPLATED = 'templated',
         BOUNDING_BOX = 'boundingBox',
         CONTENT_BOX = 'contentBox';

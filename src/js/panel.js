@@ -13,119 +13,107 @@ Component.requires = {
 Component.entryPoint = function (NS) {
 
     var Y = Brick.YUI,
-        L = Y.Lang,
-        buildTemplate = this.buildTemplate;
+        Widget = Y.Widget,
+        buildTemplate = this.buildTemplate,
 
-    var CONTENT_BOX = 'contentBox',
+        CONTENT_BOX = 'contentBox',
 
         RENDERUI = "renderUI",
         BINDUI = "bindUI",
         SYNCUI = "syncUI",
 
-        HEADER_CONTENT = 'headerContent',
-        BODY_CONTENT = 'bodyContent',
-        FOOTER_CONTENT = 'footerContent',
-
-
-        CN_MODAL_CONTENT = 'modal-content',
-        UI = Y.Widget.UI_SRC;
+        getClassName = Y.ClassNameManager.getClassName;
 
     var Bootstrap = function () {
     };
-    Bootstrap.ATTRS = {
-        headerContent: {
-            value: null
-        },
-        footerContent: {
-            value: null
-        },
-        bodyContent: {
-            value: null
-        }
+    Bootstrap.SECTION_CLASS_NAMES = {
+        header: 'modal-header',
+        body: 'modal-body',
+        footer: 'modal-footer'
     };
-    Bootstrap.HTML_PARSER = {
-        headerContent: function (contentBox) {
-            return this._parseBootsHTML('header');
-        },
-        bodyContent: function (contentBox) {
-            console.log('HTML_PARSER');
-            return this._parseBootsHTML('body');
-        },
-        footerContent: function (contentBox) {
-            return this._parseBootsHTML('footer');
-        }
+    Bootstrap.TEMPLATES = {
+        closeButton: '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>',
+        header: '<div class="modal-header"></div>',
+        body: '<div class="modal-body"></div>',
+        footer: '<div class="modal-footer"></div>'
     };
     Bootstrap.prototype = {
+
         initializer: function () {
             this._bootsNode = this.get(CONTENT_BOX);
-            this._bootsTPL = {};
 
-            buildTemplate(this._bootsTPL);
+            this._uiSetStdModOrigin = this._uiSetStdMod;
+            this._uiSetStdMod = this._uiSetStdModBootstrap;
 
-            Y.before(this._renderUIBootstrap, this, RENDERUI);
-            Y.before(this._bindUIBootstrap, this, BINDUI);
-            Y.before(this._syncUIBootstrap, this, SYNCUI);
+            Y.after(this._renderUIBootstrap, this, RENDERUI);
+
+            this.after('visibleChange', this._afterVisibleChange);
         },
         _renderUIBootstrap: function () {
-            this._bootsNode.addClass(CN_MODAL_CONTENT);
-
-            this._renderBootstrapSections();
-
-            this.after('headerContentChange', this._afterHeaderChange);
-            this.after('bodyContentChange', this._afterBodyChange);
-            this.after('footerContentChange', this._afterFooterChange);
+            this._bootsNode.replaceClass(getClassName('panel-content'), 'modal-content');
         },
-        _renderBootstrapSections: function () {
-            this._renderBootstrap('header');
-            this._renderBootstrap('body');
-            this._renderBootstrap('footer');
+        _getStdModTemplate: function (section) {
+            return Y.Node.create(Bootstrap.TEMPLATES[section], this._stdModNode.get('ownerDocument'));
         },
-        _renderBootstrap: function (section) {
-            var TM = this._bootsTPL._TM;
-            var node = Y.Node.create(TM.replace(section));
-            this._bootsNode.appendChild(node);
+        _findStdModSection: function (section) {
+            return this.get(CONTENT_BOX).one("> ." + Bootstrap.SECTION_CLASS_NAMES[section]);
         },
-
-        _bindUIBootstrap: function(){
-            console.log('_bindUIBootstrap');
-        },
-        _syncUIBootstrap: function(){
-            console.log('_syncUIBootstrap');
-            var bootsParsed = this._bootsParsed;
-
-            if (!bootsParsed || !bootsParsed[HEADER_CONTENT]) {
-                this._uiSetBootstrap('header', this.get(HEADER_CONTENT));
+        _uiSetStdModBootstrap: function(section, content, where){
+            this._uiSetStdModOrigin(section, content, where);
+            if (section === 'header'){
+                var node = this.getStdModNode(section);
+                var btnNode = Y.Node.create(Bootstrap.TEMPLATES.closeButton);
+                node.appendChild(btnNode);
+                var __self = this;
+                btnNode.once('click', function(event){
+                    __self.hide();
+                });
             }
         },
-
-        _uiSetBootstrap: function(section, content, where){
-
-        },
-
-        _parseBootsHTML: function (section) {
-            console.log(section);
-        },
-
-        _afterHeaderChange: function (e) {
-            if (e.src !== UI) {
-                this._uiSetStdMod(STD_HEADER, e.newVal, e.stdModPosition);
-            }
-        },
-
-        _afterBodyChange: function (e) {
-            console.log('_afterBodyChange');
-            if (e.src !== UI) {
-                this._uiSetStdMod(STD_BODY, e.newVal, e.stdModPosition);
-            }
-        },
-
-        _afterFooterChange: function (e) {
-            if (e.src !== UI) {
-                this._uiSetStdMod(STD_FOOTER, e.newVal, e.stdModPosition);
-            }
-        },
-
+        _afterVisibleChange: function(event){
+            this.destroy();
+           // Y.soon(Y.bind('destroy', this));
+        }
     };
     NS.WidgetBootstrapPanel = Bootstrap;
 
+    Y.MyPanel = Y.Base.create('modal', Y.Widget, [
+        // Other Widget extensions depend on these two.
+        Y.WidgetPosition,
+        Y.WidgetStdMod,
+
+        Y.WidgetAutohide,
+        Y.WidgetButtons,
+        Y.WidgetModality,
+        Y.WidgetPositionAlign,
+        Y.WidgetPositionConstrain,
+        Y.WidgetStack,
+        NS.WidgetBootstrapPanel
+    ], {
+
+
+        /*
+         BUTTONS: {
+         close: {
+         // label: '&times;',
+         action: 'hide',
+         section: 'header',
+
+         // Uses `type="button"` so the button's default action can still
+         // occur but it won't cause things like a form to submit.
+         template: '<button type="button" data-dismiss="modal" aria-hidden="true">&times;</button>',
+         classNames: 'close'
+         }
+         }/**/
+    }, {
+
+        /*
+         ATTRS: {
+         // TODO: API Docs.
+         buttons: {
+         value: ['close']
+         }
+         }
+         /**/
+    });
 };
