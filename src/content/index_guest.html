@@ -1,25 +1,14 @@
 <!--[*]
 [tt=main]_my[/tt]
-[mod=user]userblock[/mod]
+[mod=user]loginform[/mod]
+[mcss=bos]indexguest.css[/mcss]
 [*]-->
-<div id="background">
-	<table style="height: 100%; width: 100%;margin-top: 150px;"><tbody><tr>
-	<td width="37%"></td>
-	<td style="width: 300px;">
-		<div id="os_firstloading">
-			<span>{#content.index_guest.1}</span>
-			<span>{#content.index_guest.2}</span>
-		</div>
-		<div class="big" id="loginblock1" style="display: none;">
-			[mod]user:userblock[/mod]
-		</div>
-	</td>
-	<td width="37%"></td>
-	</tr></tbody></table>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            [mod]user:loginform[/mod]
+        </div>
+        <div class="col-md-4"></div>
+    </div>
 </div>
-<script>
-	Brick.Component.API.fireFunction('user', 'api', function(){
-		document.getElementById('os_firstloading').style.display = 'none';
-		document.getElementById('loginblock1').style.display = '';
-	});
-</script>

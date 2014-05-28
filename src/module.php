@@ -44,6 +44,7 @@ class BosModule extends Ab_Module {
     public function GetContentName() {
         #TODO: new version
 
+        /*
         $mode = Abricos::CleanGPC('g', 'mode', TYPE_STR);
 
         if ($mode === 'new') {
@@ -52,6 +53,7 @@ class BosModule extends Ab_Module {
             }
             return 'new_index';
         }
+        /**/
 
         if (Abricos::$user->id == 0) {
             return "index_guest";
