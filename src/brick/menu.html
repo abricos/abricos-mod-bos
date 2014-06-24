@@ -1,0 +1,34 @@
+<!--[*]
+[script]brick_menu.php[/script]
+
+[p=urlprefix]/bos/#app=[/p]
+
+[bkvar=item]
+    <li>
+        <a href="{v#url}">{v#icon} {v#title}</a>
+    </li>
+[/bkvar]
+
+[bkvar=itemwithchilds]
+    <li class="dropdown">
+        <a href="{v#url}" class="dropdown-toggle" data-toggle="dropdown">
+            {v#icon} {v#title} <b class="caret"></b>
+        </a>
+        {v#childs}
+    </li>
+[/bkvar]
+
+[bkvar=submenu]
+    <ul class="dropdown-menu">
+        {v#childs}
+    </ul>
+[/bkvar]
+
+[bkvar=icon]
+    <img src="{v#src}" class="icon"/>
+[/bkvar]
+
+[*]-->
+<ul class="bos-menu nav navbar-nav">
+    {v#childs}
+</ul>

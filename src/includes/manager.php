@@ -73,6 +73,17 @@ class BosManager extends Ab_ModuleManager {
         return $ret;
     }
 
+    public function Bos_MenuData(){
+        $lng = $this->module->lang;
+        return [
+            [
+                "name" => "controlPanel",
+                "title" => $lng['bosmenu']['controlPanel'],
+                "icon" => "/modules/bos/images/cp_icon.gif"
+            ]
+        ];
+    }
+
 }
 
 ?>

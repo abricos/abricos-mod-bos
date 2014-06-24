@@ -7,13 +7,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
-/*
- 
- // Отключить иконки приложений модулей 
- $config['module']['bos']['labels']['disable'] = array("MODNAME");
- 
- */
-
 class BosModule extends Ab_Module {
 
     /**
@@ -42,19 +35,6 @@ class BosModule extends Ab_Module {
     }
 
     public function GetContentName() {
-        #TODO: new version
-
-        /*
-        $mode = Abricos::CleanGPC('g', 'mode', TYPE_STR);
-
-        if ($mode === 'new') {
-            if (Abricos::$user->id == 0) {
-                return "new_index_guest";
-            }
-            return 'new_index';
-        }
-        /**/
-
         if (Abricos::$user->id == 0) {
             return "index_guest";
         }
@@ -78,6 +58,15 @@ class BosModule extends Ab_Module {
 
         return $mod->RSS_GetItemListAll(true, $onemod);
     }
+
+    /**
+     * Этот модуль добавляет элементы меню в Bos
+     * @return bool
+     */
+    public function Bos_IsMenu(){
+        return true;
+    }
+
 }
 
 Abricos::ModuleRegister(new BosModule());

@@ -1,51 +1,61 @@
 <!--[*]
 [tt=main]_my[/tt]
-[bkvar=rss]
-	<td class="main-rss">
-		<a href="/rss/bos/" title="{#content.index.1}" target="_blank">
-			<img src="/modules/rss/images/rss-icon-16px-op50.gif" />
-		</a>
-	</td>
-[/bkvar]
-[script]index.php[/script]
+
+[ph=sys:site_name]Site Name[/ph]
+[ph=sys:counter][/ph]
+
+[var=version][/var]
+
+[mod=bos]menu[/mod]
+[mod=user]usermenubutton[/mod]
+
+[script]content_index.php[/script]
 [*]-->
 <div id="bos" class="aw-bos">
-	<div id="hd">
-		<table style="width: 100%;"><tbody><tr>
-		<td style="width: 21px">
-			<a href="#app=bos/home/showHomePanel" title="{#content.index.2}">
-				<img src="/modules/bos/images/homeicon.gif" />
-			</a>
-		</td>
-		<td>
-			<div id="activepanel"></div>
-		</td>
-		<td>
-			<div class="buser">
-				<a href="#" class="show-user-profile user-{v#userid}" title="{#content.index.3}">{v#username}</a>
-				<a id="myprofileedit" href="/user/" class="show-user-profile user-{v#userid}" title="{#content.index.4}">{#content.index.5}</a> 
-				(<a href="#" onclick="Brick.mod.bos.logout(); return false;" >{#content.index.6}</a>)
-			</div>
-		</td>
-		
-		{v#rss}
-		
-		</tr></tbody></table>
-		<div id="bosmenu"></div>
-	</div>
-	<div id="bd">
-		<div id="pages"></div>
-	</div>
-	<div id="ft">
-		<div class="abricos">
-			<a href="/" class="sitehome">{#content.index.7}</a>
-			<a href="http://abricos.org" target="_blank">{#content.index.8}</a>
-		</div>
-	</div>
+    <header>
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <ul class="nav navbar-nav">
+                    [mod]bos:menu[/mod]
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    [mod]user:usermenubutton[/mod]
+                </ul>
+
+            </div>
+        </div>
+
+    </header>
+    <div class="container">
+        <div id="bos-pages"></div>
+    </div>
+    <footer>
+        <hr/>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <p>
+                        © <a href="/" title="[ph]sys:site_name[/ph]">[ph]sys:site_name[/ph]</a> - все
+                        права
+                        защищены
+                    </p>
+                </div>
+                <div class="col-sm-6">
+                    <p class="powered text-right">
+                        Powered by <a href="http://abricos.org"
+                                      title="Abricos - Content Management System (CMS), Web Application Platform (WebOS)">Abricos</a>
+                        [var]version[/var]
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+
 </div>
 
 <script>
-	Brick.f('bos', 'os', 'buildWorkspace', {
-		'labels': {v#labelscfg}
-	});
+    Brick.f('bos', 'os', 'buildWorkspace');
 </script>
