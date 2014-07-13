@@ -15,8 +15,8 @@ $modules = Ab_CoreModuleManager::$instance->GetModules();
 
 require_once 'classes.php';
 
-$items = [];
-$menu = [];
+$items = array();
+$menu = array();
 
 foreach ($modules as $name => $module) {
     if (!method_exists($module, 'Bos_IsMenu')) {
@@ -57,32 +57,32 @@ foreach ($menu as $item) {
     $childs = "";
     if (count($item->childs) > 0) {
         foreach ($item->childs as $subItem) {
-            $childs .= Brick::ReplaceVarByData($v['item'], [
+            $childs .= Brick::ReplaceVarByData($v['item'], array(
                 "title" => $subItem->title,
                 "url" => empty($subItem->url) ? "#" : ($p['urlprefix'].$subItem->url),
-                "icon" => empty($subItem->icon) ? "" : Brick::ReplaceVarByData($v['icon'], [
+                "icon" => empty($subItem->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
                         "src" => $subItem->icon
-                    ]),
+                    )),
                 "childs" => ""
-            ]);
+            ));
         }
-        $childs = Brick::ReplaceVarByData($v['submenu'], [
+        $childs = Brick::ReplaceVarByData($v['submenu'], array(
             "childs" => $childs
-        ]);
+        ));
     }
 
-    $lst .= Brick::ReplaceVarByData($v[empty($childs) ? 'item' : 'itemwithchilds'], [
+    $lst .= Brick::ReplaceVarByData($v[empty($childs) ? 'item' : 'itemwithchilds'], array(
         "title" => $item->title,
         "url" => empty($item->url) ? "#" : ($p['urlprefix'].$item->url),
-        "icon" => empty($item->icon) ? "" : Brick::ReplaceVarByData($v['icon'], [
+        "icon" => empty($item->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
                 "src" => $item->icon
-            ]),
+            )),
         "childs" => $childs
-    ]);
+    ));
 }
 
-$brick->content = Brick::ReplaceVarByData($brick->content, [
+$brick->content = Brick::ReplaceVarByData($brick->content, array(
     "childs" => $lst
-]);
+));
 
 ?>

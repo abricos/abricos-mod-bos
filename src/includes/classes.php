@@ -8,7 +8,7 @@ class BosMenuItem {
     public $url;
     public $icon;
     public $role;
-    public $childs = [];
+    public $childs = array();
 
     public function __construct($d = array()) {
         if (!is_array($d)) {
