@@ -81,8 +81,16 @@ foreach ($menu as $item) {
     ));
 }
 
+if (empty($p['noWrap'])) {
+    $result = Brick::ReplaceVarByData($v['wrap'], array(
+        "result" => $lst
+    ));
+} else {
+    $result = $lst;
+}
+
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
-    "childs" => $lst
+    "result" => $result
 ));
 
 ?>

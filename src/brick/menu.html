@@ -3,6 +3,8 @@
 
 [p=urlprefix]/bos/#app=[/p]
 
+[p=noWrap][/p]
+
 [bkvar=item]
     <li>
         <a href="{v#url}">{v#icon} {v#title}</a>
@@ -28,7 +30,11 @@
     <img src="{v#src}" class="icon"/>
 [/bkvar]
 
+[bkvar=wrap]
+    <ul class="bos-menu nav navbar-nav">
+        {v#result}
+    </ul>
+[/bkvar]
+
 [*]-->
-<ul class="bos-menu nav navbar-nav">
-    {v#childs}
-</ul>
+{v#result}
