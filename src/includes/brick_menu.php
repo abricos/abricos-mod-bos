@@ -33,9 +33,11 @@ foreach ($modules as $name => $module) {
         continue;
     }
     $data = $man->Bos_MenuData();
-    foreach ($data as $dItem) {
-        $item = new BosMenuItem($dItem);
-        $items[$item->name] = $item;
+    if (is_array($data)){
+        foreach ($data as $dItem) {
+            $item = new BosMenuItem($dItem);
+            $items[$item->name] = $item;
+        }
     }
 
     if (empty($item->url) || empty($item->parent)) {
