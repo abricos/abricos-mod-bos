@@ -79,7 +79,8 @@ class BosManager extends Ab_ModuleManager {
             array(
                 "name" => "controlPanel",
                 "title" => $lng['bosmenu']['controlPanel'],
-                "icon" => "/modules/bos/images/cp_icon.gif"
+                "icon" => "/modules/bos/images/cp_icon.gif",
+                "url" => "user/board/showBoardPanel"
             )
         );
     }

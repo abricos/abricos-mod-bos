@@ -13,6 +13,8 @@ $p = & $brick->param->param;
 Ab_CoreModuleManager::$instance->RegisterAllModule();
 $modules = Ab_CoreModuleManager::$instance->GetModules();
 
+$isViewChild = empty($p['noChild']);
+
 require_once 'classes.php';
 
 $items = array();
@@ -55,7 +57,7 @@ $lst = "";
 foreach ($menu as $item) {
 
     $childs = "";
-    if (count($item->childs) > 0) {
+    if (count($item->childs) > 0 && $isViewChild) {
         foreach ($item->childs as $subItem) {
             $childs .= Brick::ReplaceVarByData($v['item'], array(
                 "title" => $subItem->title,
@@ -70,10 +72,9 @@ foreach ($menu as $item) {
             "childs" => $childs
         ));
     }
-
     $lst .= Brick::ReplaceVarByData($v[empty($childs) ? 'item' : 'itemwithchilds'], array(
         "title" => $item->title,
-        "url" => empty($item->url) ? "#" : ($p['urlprefix'].$item->url),
+        "url" => (!$isViewChild && !empty($item->url)) ? ($p['urlprefix'].$item->url) : "#",
         "icon" => empty($item->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
                 "src" => $item->icon
             )),
