@@ -393,10 +393,6 @@ Component.entryPoint = function(NS){
     Workspace.prototype = {
         init: function(){
             this.pageManagerWidget = new NS.PageManagerWidget(Dom.get('bos-pages'));
-            this.pageManagerWidget.pageShowEvent.subscribe(this.onPageShow, this, true);
-        },
-        onPageShow: function(evt, prms){
-            this.activePanelWidget.setPage(prms[0]);
         }
     };
     NS.Workspace = Workspace;
