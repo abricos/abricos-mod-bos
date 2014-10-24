@@ -8,11 +8,11 @@
 
 $brick = Brick::$builder->brick;
 
-$user = Abricos::$user->info;
+$user = Abricos::$user;
 
-$unm = $user['username'];
-$lnm = $user['lastname'];
-$fnm = $user['firstname'];
+$unm = $user->username;
+$lnm = $user->lastname;
+$fnm = $user->firstname;
 
 $username = empty($lnm) && empty($fnm) ? $unm : $fnm."&nbsp;".$lnm;
 
