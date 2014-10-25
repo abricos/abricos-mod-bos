@@ -26,7 +26,7 @@ if (!empty($cfg['labels']) && !empty($cfg['labels']['disable']) && is_array($cfg
 }
 
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
-	"userid" => $user['userid'],
+	"userid" => $user->id,
 	"username" => $username,
 	"labelscfg" => $labelscfg,
 	"rss" => (!empty($modRSS) ? $brick->param->var['rss'] : "")
