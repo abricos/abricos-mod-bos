@@ -76,7 +76,7 @@ foreach ($menu as $item) {
     }
     $lst .= Brick::ReplaceVarByData($v[empty($childs) ? 'item' : 'itemwithchilds'], array(
         "title" => $item->title,
-        "url" => (!$isViewChild && !empty($item->url)) ? ($p['urlprefix'].$item->url) : "#",
+        "url" => (empty($childs) && !empty($item->url)) ? ($p['urlprefix'].$item->url) : "#",
         "icon" => empty($item->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
                 "src" => $item->icon
             )),
