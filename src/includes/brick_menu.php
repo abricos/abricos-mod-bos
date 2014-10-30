@@ -10,8 +10,8 @@ $brick = Brick::$builder->brick;
 $v = & $brick->param->var;
 $p = & $brick->param->param;
 
-Ab_CoreModuleManager::$instance->RegisterAllModule();
-$modules = Ab_CoreModuleManager::$instance->GetModules();
+Abricos::$modules->RegisterAllModule();
+$modules = Abricos::$modules->GetModules();
 
 $isViewChild = empty($p['noChild']);
 

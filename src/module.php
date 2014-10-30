@@ -40,8 +40,8 @@ class BosModule extends Ab_Module {
         }
         $cname = 'index';
 
-        if ($this->registry->adress->level >= 1 &&
-            $this->registry->adress->dir[0] == 'upload'
+        if (Abricos::$adress->level >= 1 &&
+            Abricos::$adress->dir[0] == 'upload'
         ) {
             $cname = 'upload';
         }
@@ -49,12 +49,12 @@ class BosModule extends Ab_Module {
     }
 
     public function GetLink() {
-        return $this->registry->adress->host."/".$this->takelink."/";
+        return Abricos::$adress->host."/".$this->takelink."/";
     }
 
     public function RSS_GetItemList() {
         $mod = Abricos::GetModule('rss');
-        $onemod = $this->registry->adress->dir[2];
+        $onemod = Abricos::$adress->dir[2];
 
         return $mod->RSS_GetItemListAll(true, $onemod);
     }
