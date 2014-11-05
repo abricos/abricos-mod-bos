@@ -14,7 +14,7 @@ class BosModule extends Ab_Module {
      */
     public function __construct() {
         // Версия модуля
-        $this->version = "0.1.6-dev";
+        $this->version = "0.1.6";
 
         // Название модуля
         $this->name = "bos";

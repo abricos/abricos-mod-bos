@@ -74,7 +74,7 @@ class BosManager extends Ab_ModuleManager {
     }
 
     public function Bos_MenuData() {
-        $lng = $this->module->lang;
+        $lng = $this->module->GetI18n();
         return array(
             array(
                 "name" => "controlPanel",
