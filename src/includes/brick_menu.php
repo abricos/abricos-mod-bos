@@ -7,8 +7,8 @@
  */
 
 $brick = Brick::$builder->brick;
-$v = & $brick->param->var;
-$p = & $brick->param->param;
+$v = &$brick->param->var;
+$p = &$brick->param->param;
 
 $modules = Abricos::$modules->RegisterAllModule();
 
@@ -16,7 +16,7 @@ $isViewChild = empty($p['noChild']);
 
 require_once 'classes.php';
 
-$items = array();
+$sortItems = array();
 $menu = array();
 
 foreach ($modules as $name => $module) {
@@ -32,13 +32,21 @@ foreach ($modules as $name => $module) {
         continue;
     }
     $data = $man->Bos_MenuData();
-    if (is_array($data)){
+    if (is_array($data)) {
         foreach ($data as $dItem) {
             $item = new BosMenuItem($dItem);
-            $items[$item->name] = $item;
+            $sortItems[$item->sortKey] = $item;
         }
     }
+}
+ksort($sortItems);
 
+$items = array();
+foreach ($sortItems as $item) {
+    $items[$item->name] = $item;
+}
+
+foreach ($items as $item) {
     if (empty($item->url) || empty($item->parent)) {
         $menu[$item->name] = $item;
     }
@@ -64,8 +72,8 @@ foreach ($menu as $item) {
                 "title" => $subItem->title,
                 "url" => empty($subItem->url) ? "#" : ($p['urlprefix'].$subItem->url),
                 "icon" => empty($subItem->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
-                        "src" => $subItem->icon
-                    )),
+                    "src" => $subItem->icon
+                )),
                 "childs" => ""
             ));
         }
@@ -77,8 +85,8 @@ foreach ($menu as $item) {
         "title" => $item->title,
         "url" => (empty($childs) && !empty($item->url)) ? ($p['urlprefix'].$item->url) : "#",
         "icon" => empty($item->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
-                "src" => $item->icon
-            )),
+            "src" => $item->icon
+        )),
         "childs" => $childs
     ));
 }
