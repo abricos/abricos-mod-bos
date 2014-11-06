@@ -1,5 +1,6 @@
 <?php
 return array(
+    "title" => "Bos UI",
     "bosmenu" => array(
         "controlPanel" => "Панель управления"
     ),
