@@ -398,9 +398,7 @@ Component.entryPoint = function(NS){
     NS.Workspace = Workspace;
 
     NS.API.buildWorkspace = function(cfg){
-        Brick.Permission.load(function(){
-            new NS.Workspace(cfg);
-        });
+        new NS.Workspace(cfg);
     };
 
     var _sysAJAX = Brick.ajax;

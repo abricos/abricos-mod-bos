@@ -47,12 +47,6 @@ Component.entryPoint = function(NS){
 		};
 	}();
 
-	NS.logout = function(){
-		Brick.f('user', 'api', 'userLogout', function(){
-			Brick.Page.reload();
-		});
-	};
-	
 	/**
 	 * Приложение BOS.
 	 * 
