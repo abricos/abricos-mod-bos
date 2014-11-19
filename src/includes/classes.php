@@ -10,6 +10,7 @@ class BosMenuItem {
     public $role;
     public $order;
     public $childs = array();
+    public $isParent = false;
 
     public $sortKey;
 
@@ -27,6 +28,8 @@ class BosMenuItem {
 
         $sOrd = strval(1000000-$this->order);
         $this->sortKey = str_repeat("0", 9 - strlen($sOrd)).$sOrd."_".$this->title."_".$this->name;
+
+        $this->isParent = !empty($d['isParent']);
     }
 }
 

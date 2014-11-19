@@ -78,6 +78,7 @@ class BosManager extends Ab_ModuleManager {
         return array(
             array(
                 "name" => "controlPanel",
+                "isParent" => true,
                 "order" => "1000",
                 "title" => $lng['bosmenu']['controlPanel'],
                 "icon" => "/modules/bos/images/cpanel-24.png",

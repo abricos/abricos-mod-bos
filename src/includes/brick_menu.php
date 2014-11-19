@@ -35,6 +35,10 @@ foreach ($modules as $name => $module) {
     if (is_array($data)) {
         foreach ($data as $dItem) {
             $item = new BosMenuItem($dItem);
+            if (!empty($item->role) && !$man->IsRoleEnable($item->role)) {
+                continue;
+            }
+
             $sortItems[$item->sortKey] = $item;
         }
     }
@@ -64,6 +68,10 @@ foreach ($items as $item) {
 
 $lst = "";
 foreach ($menu as $item) {
+
+    if ($item->isParent && count($item->childs) === 0) {
+        continue;
+    }
 
     $childs = "";
     if (count($item->childs) > 0 && $isViewChild) {
