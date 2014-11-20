@@ -7,6 +7,7 @@
  */
 
 $brick = Brick::$builder->brick;
+$v = &$brick->param->var;
 
 $user = Abricos::$user;
 
@@ -18,7 +19,7 @@ $username = empty($lnm) && empty($fnm) ? $unm : $fnm."&nbsp;".$lnm;
 
 $modRSS = Abricos::GetModule('rss');
 
-$cfg = Abricos::$config['module']['bos'];
+$cfg = isset(Abricos::$config['module']['bos']) ? Abricos::$config['module']['bos'] : array();
 
 $labelscfg = "{}";
 if (!empty($cfg['labels']) && !empty($cfg['labels']['disable']) && is_array($cfg['labels']['disable'])){
@@ -28,8 +29,7 @@ if (!empty($cfg['labels']) && !empty($cfg['labels']['disable']) && is_array($cfg
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
 	"userid" => $user->id,
 	"username" => $username,
-	"labelscfg" => $labelscfg,
-	"rss" => (!empty($modRSS) ? $brick->param->var['rss'] : "")
+	"labelscfg" => $labelscfg
 ));
  
 ?>

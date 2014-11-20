@@ -20,13 +20,13 @@ class BosMenuItem {
         }
         $this->name = strval($d['name']);
         $this->title = strval($d['title']);
-        $this->parent = strval($d['parent']);
+        $this->parent = isset($d['parent']) ? strval($d['parent']) : '';
         $this->url = strval($d['url']);
         $this->icon = strval($d['icon']);
-        $this->role = $d['role'];
-        $this->order = intval($d['order']);
+        $this->role = isset($d['role']) ? intval($d['role']) : 0;
+        $this->order = isset($d['order']) ? intval($d['order']) : 0;
 
-        $sOrd = strval(1000000-$this->order);
+        $sOrd = strval(1000000 - $this->order);
         $this->sortKey = str_repeat("0", 9 - strlen($sOrd)).$sOrd."_".$this->title."_".$this->name;
 
         $this->isParent = !empty($d['isParent']);

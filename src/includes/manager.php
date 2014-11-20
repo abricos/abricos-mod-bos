@@ -67,7 +67,7 @@ class BosManager extends Ab_ModuleManager {
             $r->n = $name;
             $r->d = $manager->Bos_OnlineData();
 
-            array_push($ret, $r);
+            $ret[] = $r;
         }
 
         return $ret;

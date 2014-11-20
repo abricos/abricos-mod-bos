@@ -9,6 +9,8 @@
  */
 class BosModule extends Ab_Module {
 
+    private $_manager = null;
+
     /**
      * Конструктор
      */

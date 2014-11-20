@@ -59,7 +59,7 @@ foreach ($items as $item) {
 foreach ($items as $item) {
     if (!empty($item->parent)) {
         if (!empty($menu[$item->parent])) {
-            array_push($menu[$item->parent]->childs, $item);
+            $menu[$item->parent]->childs[] = $item;
         } else {
             $menu[$item->name] = $item;
         }
