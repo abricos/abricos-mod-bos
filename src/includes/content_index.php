@@ -22,14 +22,14 @@ $modRSS = Abricos::GetModule('rss');
 $cfg = isset(Abricos::$config['module']['bos']) ? Abricos::$config['module']['bos'] : array();
 
 $labelscfg = "{}";
-if (!empty($cfg['labels']) && !empty($cfg['labels']['disable']) && is_array($cfg['labels']['disable'])){
-	$labelscfg = json_encode($cfg['labels']);
+if (!empty($cfg['labels']) && !empty($cfg['labels']['disable']) && is_array($cfg['labels']['disable'])) {
+    $labelscfg = json_encode($cfg['labels']);
 }
 
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
-	"userid" => $user->id,
-	"username" => $username,
-	"labelscfg" => $labelscfg
+    "userid" => $user->id,
+    "username" => $username,
+    "labelscfg" => $labelscfg
 ));
- 
+
 ?>

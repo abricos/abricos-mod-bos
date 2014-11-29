@@ -29,9 +29,9 @@ Component.entryPoint = function(NS){
         Brick.util.CSS.disableCSSComponent = true;
     }
 
-    var _isGlobalRunStatus = false;
-
     var buildTemplate = this.buildTemplate;
+
+    var _isGlobalRunStatus = false;
 
     var _globalPageIdInc = 1;
 
@@ -156,9 +156,6 @@ Component.entryPoint = function(NS){
 
             Workspace.instance = this;
 
-            this.pageShowEvent = new YAHOO.util.CustomEvent('pageShowEvent');
-            this.pageRemoveEvent = new YAHOO.util.CustomEvent('pageRemoveEvent');
-
             this.selectedPage = null;
 
             buildTemplate(this, 'page');
@@ -186,16 +183,18 @@ Component.entryPoint = function(NS){
                         return;
                     }
                 }
-
-                var ps = __self.pages;
-                // проверить клик в панелях
-                for (var i in ps){
-                    var panel = ps[i]['panel'];
-                    if (!L.isNull(panel) && panel.onClick(el)){
-                        E.preventDefault(evt);
-                        return;
-                    }
-                }
+                /*
+                 var ps = __self.pages;
+                 // проверить клик в панелях
+                 for (var i in ps){
+                 var panel = ps[i]['panel'];
+                 if (panel && panel.onClick(el)){
+                 console.log(panel);
+                 E.preventDefault(evt);
+                 return;
+                 }
+                 }
+                 /**/
 
                 if (href == "#"){
                     E.preventDefault(evt);
@@ -232,6 +231,20 @@ Component.entryPoint = function(NS){
                 prm4 = arr[6] || '', prm5 = arr[7] || '', prm6 = arr[8] || '', prm7 = arr[9] || '',
                 prm8 = arr[10] || '', prm9 = arr[11] || '';
 
+            var wsPage = {};
+            if (arr[3]){
+                wsPage.component = arr[3];
+            }
+            if (arr[4]){
+                wsPage.widget = arr[4];
+            }
+            for (var i = 5; i < arr.length; i++){
+                if (!wsPage.args){
+                    wsPage.args = [];
+                }
+                wsPage.args[wsPage.args.length] = arr[i];
+            }
+
             var am = decodeURIComponent(mod).split("\t");
             if (am.length == 3){
                 mod = am[0];
@@ -251,17 +264,37 @@ Component.entryPoint = function(NS){
             var fire = function(){
                 _isGlobalRunStatus = true;
                 NS.wait.hide();
-                var fn = Brick.mod[mod]['API'][page];
-                if (!L.isFunction(fn)){
-                    return;
-                }
 
-                var panel = fn(prm1, prm2, prm3, prm4, prm5, prm6, prm7, prm8, prm9);
-                if (panel && !L.isNull(panel) && panel.id != ""){
-                    panel._bosOpenedKey = key;
-                    __self.showPage(panel);
+                var fn;
+                if (L.isFunction(fn = Brick.mod[mod][page])){
+
+                    var panel = {
+                        id: Y.guid()
+                    };
+
+                    fn({
+                        //boundingBox: container,
+                        getBoundingBox: function(){
+                            return __self.registerPage(panel);
+                        },
+                        workspacePage: wsPage
+                    }, function(err, widget){
+                        if (!widget.id){
+                            widget.id = panel.id;
+                        }
+                        __self.showPage(widget);
+
+                        _isGlobalRunStatus = false;
+                    });
+                } else if (L.isFunction(fn = Brick.mod[mod]['API'][page])){
+
+                    var panel = fn(prm1, prm2, prm3, prm4, prm5, prm6, prm7, prm8, prm9);
+                    if (panel && !L.isNull(panel) && panel.id != ""){
+                        panel._bosOpenedKey = key;
+                        __self.showPage(panel);
+                    }
+                    _isGlobalRunStatus = false;
                 }
-                _isGlobalRunStatus = false;
             };
 
             if (!Brick.componentLoaded(mod, comp)){
@@ -270,6 +303,28 @@ Component.entryPoint = function(NS){
                 });
             } else {
                 fire();
+            }
+        },
+
+        showPage: function(panel){
+            var page = this.getPageByPanel(panel);
+            if (L.isNull(page)){
+                return;
+            }
+
+            if (this.selectedPage == page){
+                return;
+            }
+
+            var ps = this.pages;
+            for (var i = 0; i < ps.length; i++){
+                Dom.setStyle(ps[i]['element'], 'display', 'none');
+            }
+            Dom.setStyle(page['element'], 'display', '');
+
+            this.selectedPage = page;
+            if (page.panel && page.panel.onShow){
+                page.panel.onShow();
             }
         },
 
@@ -299,13 +354,6 @@ Component.entryPoint = function(NS){
             return null;
         },
 
-        onPageShow: function(page){
-            this.pageShowEvent.fire(page);
-        },
-        onPageRemove: function(page){
-            this.pageRemoveEvent.fire(page);
-        },
-
         closePage: function(panel){
             var page = this.getPageByPanel(panel);
             if (L.isNull(page)){
@@ -328,9 +376,6 @@ Component.entryPoint = function(NS){
             }
             this.pages = nps;
             this.selectedPage = null;
-
-            //!!! this.activePanelWidget.removePage(page);
-            this.onPageRemove(page);
 
             if (nps.length > 0){
                 var lastPanel = nps[nps.length - 1].panel;
@@ -355,31 +400,6 @@ Component.entryPoint = function(NS){
             }
 
             return this.getPage(panel.id);
-        },
-
-        showPage: function(panel){
-            var page = this.getPageByPanel(panel);
-            if (L.isNull(page)){
-                return;
-            }
-
-            if (this.selectedPage == page){
-                return;
-            }
-
-            var ps = this.pages;
-            for (var i = 0; i < ps.length; i++){
-                Dom.setStyle(ps[i]['element'], 'display', 'none');
-            }
-            Dom.setStyle(page['element'], 'display', '');
-
-            this.selectedPage = page;
-            page.panel.onShow();
-
-            this.onPageShow(page);
-        },
-
-        _setWorkspaceSize: function(key){
         }
 
     };
