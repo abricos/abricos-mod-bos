@@ -183,18 +183,6 @@ Component.entryPoint = function(NS){
                         return;
                     }
                 }
-                /*
-                 var ps = __self.pages;
-                 // проверить клик в панелях
-                 for (var i in ps){
-                 var panel = ps[i]['panel'];
-                 if (panel && panel.onClick(el)){
-                 console.log(panel);
-                 E.preventDefault(evt);
-                 return;
-                 }
-                 }
-                 /**/
 
                 if (href == "#"){
                     E.preventDefault(evt);
@@ -264,9 +252,8 @@ Component.entryPoint = function(NS){
             var fire = function(){
                 _isGlobalRunStatus = true;
                 NS.wait.hide();
-
-                var fn;
-                if (L.isFunction(fn = Brick.mod[mod][page])){
+                var fn = Brick.mod[mod][page];
+                if (L.isFunction(fn)){
 
                     var panel = {
                         id: Y.guid()
@@ -287,7 +274,6 @@ Component.entryPoint = function(NS){
                         _isGlobalRunStatus = false;
                     });
                 } else if (L.isFunction(fn = Brick.mod[mod]['API'][page])){
-
                     var panel = fn(prm1, prm2, prm3, prm4, prm5, prm6, prm7, prm8, prm9);
                     if (panel && !L.isNull(panel) && panel.id != ""){
                         panel._bosOpenedKey = key;
@@ -318,9 +304,9 @@ Component.entryPoint = function(NS){
 
             var ps = this.pages;
             for (var i = 0; i < ps.length; i++){
-                Dom.setStyle(ps[i]['element'], 'display', 'none');
+                Y.one(ps[i]['element']).addClass('hide');
             }
-            Dom.setStyle(page['element'], 'display', '');
+            Y.one(page['element']).removeClass('hide');
 
             this.selectedPage = page;
             if (page.panel && page.panel.onShow){
