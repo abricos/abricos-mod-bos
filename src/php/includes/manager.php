@@ -81,7 +81,7 @@ class BosManager extends Ab_ModuleManager {
                 "isParent" => true,
                 "order" => "1000",
                 "title" => $lng['bosmenu']['controlPanel'],
-                "icon" => "/modules/bos/images/cpanel-24.png",
+                "icon" => "{C#ASSETS}/images/cpanel-24.png",
                 "url" => "user/board/showBoardPanel"
             )
         );

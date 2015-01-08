@@ -52,7 +52,9 @@ Component.entryPoint = function(NS){
 
             var container = NS.Workspace.instance.registerPage(this);
 
-            container.innerHTML = (config.template || this.initTemplate());
+            var tpl = (config.template || this.initTemplate());
+
+            container.innerHTML = tpl;
 
             this.cfg = new YAHOO.util.Config(this);
             if (config){
@@ -146,7 +148,6 @@ Component.entryPoint = function(NS){
     };
     PageManagerWidget.instance = null;
     PageManagerWidget.prototype = {
-
         init: function(container, defpage){
 
             this.container = container;
@@ -322,6 +323,7 @@ Component.entryPoint = function(NS){
                 'id': panel.id
             });
             var elPage = div.childNodes[0];
+
             this.container.appendChild(elPage);
 
             var ps = this.pages;

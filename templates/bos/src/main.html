@@ -1,38 +1,34 @@
 <!--[*]
-[bkvar=js][/bkvar]
-[bkvar=css][/bkvar]
 [mod=sys]jsvar|fullcssforie=true[/mod]
-[var=version][/var]
 [ph=sys:site_name][/ph]
-[!mod=user]roles[/mod]
 
+[var=js][/var]
+[var=css][/var]
+
+[css]/vendor/bootstrap/css/bootstrap.min.css[/css]
+[css]/vendor/font-awesome/css/font-awesome.min.css[/css]
 [mcss=bos]main.css[/mcss]
 
 [*]--><!DOCTYPE html>
 <html lang="ru">
 <head>
-	<title>[ph]sys:site_name[/ph] - Abricos BOS UI [var]version[/var]</title>
+	<title>[ph]sys:site_name[/ph] / Abricos BOS UI [var]version[/var]</title>
 
-    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-	<link rel="shortcut icon" href="/template/bos/assets/images/favicon.ico" />
-
+	<link rel="shortcut icon" href="{C#ASSETS}/images/favicon.ico" />
 
     [mod]sys:jsvar[/mod]
 
-    <link href="/vendor/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <script src="/gzip.php?base=/vendor&v={C#VERSION}&file=jquery/jquery.min.js,bootstrap/js/bootstrap.min.js"></script>
 
-    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    [var]js[/var]
 
-    <script src="/gzip.php?base=/vendor&v=[var]version[/var]&file=jquery/jquery.min.js,bootstrap/js/bootstrap.min.js"></script>
+    [var]css[/var]
 
-    [bkvar]css[/bkvar]
-
-	[bkvar]js[/bkvar]
-	
-	[mod]user:roles[/mod]
+    [mod]rss:meta[/mod]
 </head>
 <body class="aw-bos yui3-skin-sam">
 	[tt]content[/tt]
