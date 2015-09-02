@@ -9,14 +9,14 @@
 [mod=bos]menu[/mod]
 [mod=user]usermenubutton[/mod]
 
-[script]content_index.php[/script]
+[script]content/index.php[/script]
 [*]-->
 <div id="bos" class="aw-bos">
     <header>
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
 
-                <ul class="nav navbar-nav">
+                <ul id="bosMenuWorkspace" class="nav navbar-nav">
                     [mod]bos:menu[/mod]
                 </ul>
 
@@ -26,10 +26,9 @@
 
             </div>
         </div>
-
     </header>
     <div class="container">
-        <div id="bos-pages"></div>
+        <div id="bosWorkspace"></div>
     </div>
     <footer>
         <hr/>
@@ -51,11 +50,14 @@
                 </div>
             </div>
         </div>
-
     </footer>
-
 </div>
 
 <script>
-    Brick.f('bos', 'os', 'buildWorkspace');
+    Brick.use('bos', 'os', function(err, NS){
+        new NS.WorkspaceWidget({
+            srcNode: '#bosWorkspace',
+            srcMenuNode: '#bosMenuWorkspace'
+        })
+    });
 </script>

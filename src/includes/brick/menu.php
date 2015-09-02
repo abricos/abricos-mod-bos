@@ -2,7 +2,8 @@
 /**
  * @package Abricos
  * @subpackage Bos
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright 2011-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License (MIT)
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
 
@@ -14,28 +15,26 @@ $modules = Abricos::$modules->RegisterAllModule();
 
 $isViewChild = empty($p['noChild']);
 
-require_once 'classes.php';
-
 $sortItems = array();
 $menu = array();
 
-foreach ($modules as $name => $module) {
-    if (!method_exists($module, 'Bos_IsMenu')) {
+foreach ($modules as $name => $module){
+    if (!method_exists($module, 'Bos_IsMenu')){
         continue;
     }
-    if (!$module->Bos_IsMenu()) {
+    if (!$module->Bos_IsMenu()){
         continue;
     }
     $man = $module->GetManager();
 
-    if (!method_exists($man, 'Bos_MenuData')) {
+    if (!method_exists($man, 'Bos_MenuData')){
         continue;
     }
     $data = $man->Bos_MenuData();
-    if (is_array($data)) {
-        foreach ($data as $dItem) {
-            $item = new BosMenuItem($dItem);
-            if (!empty($item->role) && !$man->IsRoleEnable($item->role)) {
+    if (is_array($data)){
+        foreach ($data as $dItem){
+            $item = new BosMenuItem($module, $dItem);
+            if (!empty($item->role) && !$man->IsRoleEnable($item->role)){
                 continue;
             }
 
@@ -46,19 +45,19 @@ foreach ($modules as $name => $module) {
 ksort($sortItems);
 
 $items = array();
-foreach ($sortItems as $item) {
+foreach ($sortItems as $item){
     $items[$item->name] = $item;
 }
 
-foreach ($items as $item) {
-    if (empty($item->url) || empty($item->parent)) {
+foreach ($items as $item){
+    if (empty($item->url) || empty($item->parent)){
         $menu[$item->name] = $item;
     }
 }
 
-foreach ($items as $item) {
-    if (!empty($item->parent)) {
-        if (!empty($menu[$item->parent])) {
+foreach ($items as $item){
+    if (!empty($item->parent)){
+        if (!empty($menu[$item->parent])){
             $menu[$item->parent]->childs[] = $item;
         } else {
             $menu[$item->name] = $item;
@@ -67,17 +66,23 @@ foreach ($items as $item) {
 }
 
 $lst = "";
-foreach ($menu as $item) {
+foreach ($menu as $item){
+    /** @var $item BosMenuItem */
 
-    if ($item->isParent && count($item->childs) === 0) {
+    if ($item->isParent && count($item->childs) === 0){
         continue;
     }
 
     $childs = "";
-    if (count($item->childs) > 0 && $isViewChild) {
-        foreach ($item->childs as $subItem) {
+    if (count($item->childs) > 0 && $isViewChild){
+        foreach ($item->childs as $subItem){
+            /** @var $subItem BosMenuItem */
             $childs .= Brick::ReplaceVarByData($v['item'], array(
+                "module" => $subItem->module->name,
+                "name" => $subItem->name,
                 "title" => $subItem->title,
+                "descript" => $subItem->descript,
+                "method" => $subItem->method,
                 "url" => empty($subItem->url) ? "#" : ($p['urlprefix'].$subItem->url),
                 "icon" => empty($subItem->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
                     "src" => $subItem->icon
@@ -90,7 +95,11 @@ foreach ($menu as $item) {
         ));
     }
     $lst .= Brick::ReplaceVarByData($v[empty($childs) ? 'item' : 'itemwithchilds'], array(
+        "module" => $item->module->name,
+        "name" => $item->name,
         "title" => $item->title,
+        "descript" => $item->descript,
+        "method" => $item->method,
         "url" => (empty($childs) && !empty($item->url)) ? ($p['urlprefix'].$item->url) : "#",
         "icon" => empty($item->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
             "src" => $item->icon
@@ -99,7 +108,7 @@ foreach ($menu as $item) {
     ));
 }
 
-if (empty($p['noWrap'])) {
+if (empty($p['noWrap'])){
     $result = Brick::ReplaceVarByData($v['wrap'], array(
         "result" => $lst
     ));

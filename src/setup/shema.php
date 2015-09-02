@@ -1,12 +1,12 @@
 <?php
 /**
- * Схема таблиц модуля
- *
  * @package Abricos
  * @subpackage Bos
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
+ * @copyright 2011-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License (MIT)
  * @author Alexander Kuzmin <roosit@abricos.org>
  */
+
 
 $charset = "CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'";
 $updateManager = Ab_UpdateManager::$current;

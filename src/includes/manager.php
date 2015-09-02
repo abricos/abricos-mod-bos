@@ -1,10 +1,16 @@
 <?php
-
 /**
  * @package Abricos
  * @subpackage Bos
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
- * @author Alexander Kuzmin (roosit@abricos.org)
+ * @copyright 2011-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License (MIT)
+ * @author Alexander Kuzmin <roosit@abricos.org>
+ */
+
+require_once 'classes.php';
+
+/**
+ * Class BosManager
  */
 class BosManager extends Ab_ModuleManager {
 

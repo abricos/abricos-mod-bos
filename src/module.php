@@ -1,5 +1,13 @@
 <?php
 /**
+ * @package Abricos
+ * @subpackage Bos
+ * @copyright 2011-2015 Alexander Kuzmin
+ * @license http://opensource.org/licenses/mit-license.php MIT License (MIT)
+ * @author Alexander Kuzmin <roosit@abricos.org>
+ */
+
+/**
  * Модуль Bos - интерфейс пользователя
  *
  * @package Abricos
@@ -16,7 +24,7 @@ class BosModule extends Ab_Module {
      */
     public function __construct() {
         // Версия модуля
-        $this->version = "0.1.6";
+        $this->version = "0.1.7";
 
         // Название модуля
         $this->name = "bos";
