@@ -89,11 +89,13 @@ Component.entryPoint = function(NS){
         createPage: function(key){
             var pURL = this._parseURL(key),
                 tp = this.template,
-                node = tp.append('pages', tp.replace('page', {id: Y.guid()}));
+                id = Y.guid(),
+                node = tp.append('pages', tp.replace('page', {id: id}));
 
             var page = {
                 id: pURL.id,
-                node: node
+                node: node,
+                widgetNode: Y.Node.one('#' + id)
             };
             this._pages[this._pages.length] = page;
             return page;
@@ -119,9 +121,9 @@ Component.entryPoint = function(NS){
             var ps = this._pages;
             for (var i = 0; i < ps.length; i++){
                 if (page.id === ps[i].id){
-                    page.node.removeClass('hide');
+                    ps[i].node.removeClass('hide');
                 } else {
-                    page.node.addClass('hide');
+                    ps[i].node.addClass('hide');
                 }
             }
             this._selectedPage = page;
@@ -143,22 +145,16 @@ Component.entryPoint = function(NS){
                 return; // TODO: show 404 page
             }
 
-            var instance = this;
-
             Brick.use(pURL.module, pURL.component, function(err, ns){
                 if (err || !Y.Lang.isFunction(ns[pURL.startPoint])){
                     return;// TODO: show 404 page
                 }
                 pageInfo = this.createPage(key);
-
-                ns[pURL.startPoint].call(null, {
-                        boundingBox: pageInfo.node,
-                        workspacePage: pURL.workspacePage
-                    }, function(err, widget){
-                        pageInfo.widget = widget;
-                        instance.showPage(key);
-                    }
-                );
+                pageInfo.widget = ns[pURL.startPoint]({
+                    boundingBox: pageInfo.widgetNode,
+                    workspacePage: pURL.workspacePage
+                });
+                this.showPage(key);
             }, this);
         }
     }, {
