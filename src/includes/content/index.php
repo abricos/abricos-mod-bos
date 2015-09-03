@@ -10,27 +10,32 @@
 $brick = Brick::$builder->brick;
 $v = &$brick->param->var;
 
-$user = Abricos::$user;
+$extList = "";
 
-$unm = $user->username;
-$lnm = $user->lastname;
-$fnm = $user->firstname;
+$modules = Abricos::$modules->RegisterAllModule();
 
-$username = empty($lnm) && empty($fnm) ? $unm : $fnm."&nbsp;".$lnm;
+foreach ($modules as $name => $module){
+    if (!method_exists($module, 'Bos_IsExtension')){
+        continue;
+    }
+    if (!$module->Bos_IsExtension()){
+        continue;
+    }
+    $man = $module->GetManager();
 
-$modRSS = Abricos::GetModule('rss');
-
-$cfg = isset(Abricos::$config['module']['bos']) ? Abricos::$config['module']['bos'] : array();
-
-$labelscfg = "{}";
-if (!empty($cfg['labels']) && !empty($cfg['labels']['disable']) && is_array($cfg['labels']['disable'])) {
-    $labelscfg = json_encode($cfg['labels']);
+    if (!method_exists($man, 'Bos_ExtensionData')){
+        continue;
+    }
+    $data = $man->Bos_ExtensionData();
+    if (!is_array($data)){
+        continue;
+    }
+    $data['module'] = $name;
+    $extList .= Brick::ReplaceVarByData($v['ext'], $data);
 }
 
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
-    "userid" => $user->id,
-    "username" => $username,
-    "labelscfg" => $labelscfg
+    'extList' => $extList
 ));
 
 ?>

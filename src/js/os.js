@@ -18,9 +18,25 @@ Component.entryPoint = function(NS){
     }
 
     NS.WorkspaceMenuWidget = Y.Base.create('workspaceMenuWidget', SYS.AppWidget, [], {
-        onInitAppWidget: function(err, appInstance){
+        execMethod: function(module, component, method){
+            this.set('waiting', true);
+            Brick.use(module, component, function(err, ns){
+                this.set('waiting', true);
+                if (err){
+                    return;
+                }
+                if (Y.Lang.isFunction(ns[method])){
+                    ns[method]();
+                }
+            }, this);
         },
-        destructor: function(){
+        onClick: function(e){
+            if (Y.Lang.isString(e.dataClick) && e.dataClick.length > 0){
+                var module = e.target.getData('module'),
+                    component = e.target.getData('component');
+                this.execMethod(module, component, e.dataClick);
+                return true;
+            }
         }
     }, {
         ATTRS: {
@@ -45,7 +61,9 @@ Component.entryPoint = function(NS){
             this._history = new Y.HistoryHash();
             this._history.on('change', this._onHistoryChange, this);
 
-            this.navigate(this._history.get('app'));
+            this.navigate(this._history.get('app'), function(){
+                this.execExtensions();
+            }, this);
         },
         destructor: function(){
             if (this.menuWidget){
@@ -59,6 +77,30 @@ Component.entryPoint = function(NS){
                     ps[i].widget.destroy();
                 }
             }
+        },
+        _execExtension: function(exts, callback, context){
+            if (exts.length === 0){
+                return callback.call(context, null);
+            }
+            var ext = exts.pop();
+
+            Brick.use(ext.module, ext.component, function(err, ns){
+                if (Y.Lang.isFunction(ns[ext.method])){
+                    ns[ext.method].call(null, {workspaceWidget: this}, function(){
+                        this._execExtension(exts, callback, context);
+                    }, this);
+                }else{
+                    this._execExtension(exts, callback, context);
+                }
+            }, this);
+        },
+        execExtensions: function(callback, context){
+            callback = Y.Lang.isFunction(callback) ? callback : function(){
+            };
+            context = context || this;
+
+            var exts = this.get('extensions').slice();
+            this._execExtension(exts, callback, context);
         },
         _onHistoryChange: function(e){
             if (e.changed['app']){
@@ -128,7 +170,11 @@ Component.entryPoint = function(NS){
             }
             this._selectedPage = page;
         },
-        navigate: function(key){
+        navigate: function(key, callback, context){
+            callback = Y.Lang.isFunction(callback) ? callback : function(){
+            };
+            context = context || this;
+
             if (!key){
                 key = this.get('defaultPage');
             }
@@ -138,15 +184,27 @@ Component.entryPoint = function(NS){
             if (pageInfo){
                 this.showPage(key);
                 pageInfo.widget.showWorkspacePage(pURL.workspacePage);
+                callback.call(context, null, pageInfo);
                 return;
             }
 
             if (!Brick.componentExists(pURL.module, pURL.component)){
+                callback.call(context, {
+                    err: 404,
+                    msg: 'Component not found: module=`' + pURL.module
+                    + '`, component=`' + pURL.component + '`'
+                }, null);
                 return; // TODO: show 404 page
             }
 
             Brick.use(pURL.module, pURL.component, function(err, ns){
                 if (err || !Y.Lang.isFunction(ns[pURL.startPoint])){
+                    callback.call(context, {
+                        err: 500,
+                        msg: 'StartPoint not found: module=`' + pURL.module
+                        + '`, component=`' + pURL.component
+                        + '`, startPoint=`' + pURL.startPoint + '`'
+                    }, null);
                     return;// TODO: show 404 page
                 }
                 pageInfo = this.createPage(key);
@@ -155,6 +213,7 @@ Component.entryPoint = function(NS){
                     workspacePage: pURL.workspacePage
                 });
                 this.showPage(key);
+                callback.call(context, null, pageInfo);
             }, this);
         }
     }, {
@@ -166,7 +225,8 @@ Component.entryPoint = function(NS){
             },
             defaultPage: {
                 value: 'bos/home/showHomeWidget'
-            }
+            },
+            extensions: {value: []}
         }
     });
 

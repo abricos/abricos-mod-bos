@@ -9,6 +9,14 @@
 [mod=bos]menu[/mod]
 [mod=user]usermenubutton[/mod]
 
+[bkvar=ext]
+    exts[exts.length] = {
+        module: '{v#module}',
+        component: '{v#component}',
+        method: '{v#method}'
+    };
+[/bkvar]
+
 [script]content/index.php[/script]
 [*]-->
 <div id="bos" class="aw-bos">
@@ -54,10 +62,15 @@
 </div>
 
 <script>
+    var exts = [];
+
+    {v#extList}
+
     Brick.use('bos', 'os', function(err, NS){
         new NS.WorkspaceWidget({
             srcNode: '#bosWorkspace',
-            srcMenuNode: '#bosMenuWorkspace'
+            srcMenuNode: '#bosMenuWorkspace',
+            extensions: exts
         })
     });
 </script>

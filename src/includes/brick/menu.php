@@ -83,6 +83,7 @@ foreach ($menu as $item){
                 "title" => $subItem->title,
                 "descript" => $subItem->descript,
                 "method" => $subItem->method,
+                "component" => $subItem->component,
                 "url" => empty($subItem->url) ? "#" : ($p['urlprefix'].$subItem->url),
                 "icon" => empty($subItem->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
                     "src" => $subItem->icon
@@ -100,6 +101,7 @@ foreach ($menu as $item){
         "title" => $item->title,
         "descript" => $item->descript,
         "method" => $item->method,
+        "component" => $item->component,
         "url" => (empty($childs) && !empty($item->url)) ? ($p['urlprefix'].$item->url) : "#",
         "icon" => empty($item->icon) ? "" : Brick::ReplaceVarByData($v['icon'], array(
             "src" => $item->icon
