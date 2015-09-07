@@ -2,7 +2,8 @@ var Component = new Brick.Component();
 Component.requires = {
     mod: [
         {name: 'user', files: ['permission.js']},
-        {name: 'sys', files: ['application.js']}
+        {name: 'sys', files: ['application.js']},
+        {name: '{C#MODNAME}', files: ['model.js']}
     ]
 };
 Component.entryPoint = function(NS){
@@ -15,5 +16,16 @@ Component.entryPoint = function(NS){
         initializer: function(){
             this.initCallbackFire();
         }
-    }, [], {});
+    }, [], {
+        ATTRS: {
+            isLoadAppStructure: {value: true},
+            SummaryList: {value: NS.SummaryList}
+        },
+        REQS: {
+            summaryList: {
+                attribute: true,
+                type: 'modelList:SummaryList'
+            }
+        }
+    });
 };

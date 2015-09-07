@@ -1,0 +1,29 @@
+{
+  "version": "0.1.0",
+  "type": "model",
+  "fields": {
+    "id": {
+      "type": "string"
+    },
+    "module": {
+      "type": "string",
+      "json": "m"
+    },
+    "component": {
+      "type": "string",
+      "json": "c"
+    },
+    "widget": {
+      "type": "string",
+      "json": "w"
+    },
+    "title": {
+      "type": "string",
+      "json": "tl"
+    },
+    "descript": {
+      "type": "string",
+      "json": "dsc"
+    }
+  }
+}

@@ -154,6 +154,7 @@ Component.entryPoint = function(NS){
         },
         showPage: function(key){
             var page = this.getPage(key);
+
             if (!page){
                 return; // OPS... What is it?
             }
@@ -224,7 +225,7 @@ Component.entryPoint = function(NS){
                 getter: Y.Node.one
             },
             defaultPage: {
-                value: 'bos/home/showHomeWidget'
+                value: 'bos/wspace/ws'
             },
             extensions: {value: []}
         }

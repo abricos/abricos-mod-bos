@@ -24,75 +24,42 @@ class BosManager extends Ab_ModuleManager {
      */
     public static $instance = null;
 
-    public function __construct(BosModule $module) {
+    public function __construct(BosModule $module){
         parent::__construct($module);
 
         BosManager::$instance = $this;
     }
 
-    private function _AJAX($modname, $data) {
-        if ($modname == "bos") {
-            switch ($data->do) {
-                case 'online':
-                    return $this->Online($data->mods);
-            }
-            return null;
-        }
-
-        $module = Abricos::GetModule($modname);
-        if (empty($module)) {
-            return null;
-        }
-        $manager = $module->GetManager();
-        return $manager->AJAX($data);
+    public function AJAX($d){
+        return $this->GetBos()->AJAX($d);
     }
 
-    public function AJAX($d) {
-        $ret = new stdClass();
-        $ret->u = $this->userid;
-        $ret->r = $this->_AJAX($d->nm, $d->d);
+    private $_bos;
 
-        return $ret;
-    }
-
-    public function Online($mods) {
-        $ret = array();
-
-        foreach ($mods as $name) {
-            $mod = Abricos::GetModule($name);
-            if (!method_exists($mod, 'GetManager')) {
-                continue;
-            }
-            $manager = $mod->GetManager();
-
-            if (!method_exists($manager, 'Bos_OnlineData')) {
-                continue;
-            }
-
-            $r = new stdClass();
-            $r->n = $name;
-            $r->d = $manager->Bos_OnlineData();
-
-            $ret[] = $r;
+    /**
+     * @return Bos
+     */
+    public function GetBos(){
+        if (!is_null($this->_bos)){
+            return $this->_bos;
         }
-
-        return $ret;
+        require_once 'classes/bos.php';
+        return $this->_bos = new Bos($this);
     }
 
-    public function Bos_MenuData() {
-        $lng = $this->module->GetI18n();
+    public function Bos_MenuData(){
+        $i18n = $this->module->I18n();
         return array(
             array(
                 "name" => "controlPanel",
                 "isParent" => true,
                 "order" => "1000",
-                "title" => $lng['bosmenu']['controlPanel'],
+                "title" => $i18n->Translate('bosmenu.controlPanel'),
                 "icon" => "/modules/bos/images/cpanel-24.png",
-                "url" => "user/board/showBoardPanel"
+                "url" => "bos/wspace/ws"
             )
         );
     }
-
 }
 
 ?>
