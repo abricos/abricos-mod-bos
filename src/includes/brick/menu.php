@@ -11,6 +11,8 @@ $brick = Brick::$builder->brick;
 $v = &$brick->param->var;
 $p = &$brick->param->param;
 
+Abricos::GetModule('bos')->GetManager();
+
 $modules = Abricos::$modules->RegisterAllModule();
 
 $isViewChild = empty($p['noChild']);
@@ -22,7 +24,7 @@ foreach ($modules as $name => $module){
     if (!method_exists($module, 'Bos_IsMenu')){
         continue;
     }
-    if (!$module->Bos_IsMenu()){
+    if (!$module->Bos_IsMenu($p)){
         continue;
     }
     $man = $module->GetManager();
@@ -30,7 +32,7 @@ foreach ($modules as $name => $module){
     if (!method_exists($man, 'Bos_MenuData')){
         continue;
     }
-    $data = $man->Bos_MenuData();
+    $data = $man->Bos_MenuData($p);
     if (is_array($data)){
         foreach ($data as $dItem){
             $item = new BosMenuItem($module, $dItem);
