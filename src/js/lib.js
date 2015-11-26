@@ -8,15 +8,23 @@ Component.requires = {
 };
 Component.entryPoint = function(NS){
 
+    NS.roles = new Brick.AppRoles('{C#MODNAME}', {});
+
     var Y = Brick.YUI,
         COMPONENT = this,
         SYS = Brick.mod.sys;
 
     SYS.Application.build(COMPONENT, {}, {
         initializer: function(){
-            this.initCallbackFire();
+            var instance = this;
+            NS.roles.load(function(){
+                instance.initCallbackFire();
+            });
         }
     }, [], {
+        APPS: {
+            notify: {}
+        },
         ATTRS: {
             isLoadAppStructure: {value: true},
             SummaryList: {value: NS.SummaryList}

@@ -3,16 +3,32 @@ body {
 }
 
 .aw-bos {
-  #bos {
-    .bos-menu {
-      .icon {
-        max-width: 24px;
-        max-height: 24px;
+  .bos-menu {
+    .icon {
+      max-width: 24px;
+      max-height: 24px;
+    }
+    .app-label {
+      position: relative;
+      .notice {
+        position: absolute;
+        right: 0;
+        top: 7px;
+
+        font-size: 9px;
+        border-radius: 10px;
+        background-color: #E18C14;
+        color: #fff;
+        min-width: 10px;
+        text-align: center;
+        line-height: 1;
+        padding: 3px 5px 1px;
       }
     }
-    .bosWorkspace {
-      min-height: 400px;
-    }
+  }
+  .bosWorkspace {
+    min-height: 400px;
   }
 }
+
 

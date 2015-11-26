@@ -18,6 +18,51 @@ Component.entryPoint = function(NS){
     }
 
     NS.WorkspaceMenuWidget = Y.Base.create('workspaceMenuWidget', SYS.AppWidget, [], {
+        onInitAppWidget: function(err, appInstance){
+            this.cronStart();
+        },
+        destructor: function(){
+            this.cronStop();
+        },
+        _onNotifyAppResponses: function(e){
+            if (e.err || !e.result.summaryList){
+                return;
+            }
+            this._renderNoticeList(e.result.summaryList);
+        },
+        cronStart: function(){
+            var app = this.get('appInstance').getApp('notify');
+            if (app.cronIsStart()){
+                return;
+            }
+            app.on('appResponses', this._onNotifyAppResponses, this);
+            app.cronStart();
+        },
+        cronStop: function(){
+            var app = this.get('appInstance').getApp('notify');
+            if (!app.cronIsStart()){
+                return;
+            }
+            app.detach('appResponses', this._onNotifyAppResponses, this);
+            app.cronStop();
+        },
+        _renderNoticeList: function(summaryList){
+            var summary, noticeNode;
+            this.get('srcNode').all('.app-label').each(function(node){
+
+                noticeNode = node.one('.notice');
+                if (!noticeNode){
+                    return;
+                }
+                summary = summaryList.getById(node.getData('module'));
+                if (!summary || summary.get('count') === 0){
+                    noticeNode.addClass('hide');
+                } else {
+                    noticeNode.setHTML(summary.get('count'));
+                    noticeNode.removeClass('hide');
+                }
+            }, this);
+        },
         execMethod: function(module, component, method){
             this.set('waiting', true);
             Brick.use(module, component, function(err, ns){
@@ -82,14 +127,15 @@ Component.entryPoint = function(NS){
             if (exts.length === 0){
                 return callback.call(context, null);
             }
-            var ext = exts.pop();
+            var instance = this,
+                ext = exts.pop();
 
             Brick.use(ext.module, ext.component, function(err, ns){
                 if (Y.Lang.isFunction(ns[ext.method])){
-                    ns[ext.method].call(null, {workspaceWidget: this}, function(){
+                    ns[ext.method].call(null, {workspaceWidget: instance}, function(){
                         this._execExtension(exts, callback, context);
                     }, this);
-                }else{
+                } else {
                     this._execExtension(exts, callback, context);
                 }
             }, this);
