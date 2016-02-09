@@ -32,7 +32,7 @@ Component.entryPoint = function(NS){
         },
         cronStart: function(){
             var app = this.get('appInstance').getApp('notify');
-            if (app.cronIsStart()){
+            if (!app || app.cronIsStart()){
                 return;
             }
             app.on('appResponses', this._onNotifyAppResponses, this);
@@ -40,7 +40,7 @@ Component.entryPoint = function(NS){
         },
         cronStop: function(){
             var app = this.get('appInstance').getApp('notify');
-            if (!app.cronIsStart()){
+            if (!app || !app.cronIsStart()){
                 return;
             }
             app.detach('appResponses', this._onNotifyAppResponses, this);
