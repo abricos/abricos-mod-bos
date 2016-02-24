@@ -14,7 +14,7 @@ require_once 'models.php';
  *
  * @property BosManager $manager
  */
-class Bos extends AbricosApplication {
+class BosApp extends AbricosApplication {
 
     protected $_cache = array();
 
@@ -52,6 +52,7 @@ class Bos extends AbricosApplication {
             if (!method_exists($module, 'Bos_IsSummary') || !$module->Bos_IsSummary()){
                 continue;
             }
+
             $man = $module->GetManager();
 
             if (!method_exists($man, 'Bos_SummaryData')){
@@ -79,8 +80,8 @@ class Bos extends AbricosApplication {
                     $list->Add($this->models->InstanceClass('Summary', $dItem));
                 }
             }
-            return $list;
         }
+        return $list;
     }
 }
 

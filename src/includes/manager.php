@@ -31,20 +31,22 @@ class BosManager extends Ab_ModuleManager {
     }
 
     public function AJAX($d){
-        return $this->GetBos()->AJAX($d);
+        return $this->GetApp()->AJAX($d);
     }
 
-    private $_bos;
+    private $_app;
 
     /**
      * @return Bos
      */
-    public function GetBos(){
-        if (!is_null($this->_bos)){
-            return $this->_bos;
+    public function GetApp(){
+        if (!is_null($this->_app)){
+            return $this->_app;
         }
-        require_once 'classes/bos.php';
-        return $this->_bos = new Bos($this);
+        $this->module->ScriptRequireOnce(array(
+            'includes/app.php'
+        ));
+        return $this->_app = new BosApp($this);
     }
 
     public function Bos_MenuData(){
