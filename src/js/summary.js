@@ -26,7 +26,6 @@ Component.entryPoint = function(NS){
                     arr[arr.length] = summary;
                 });
             }
-            console.log(arr);
             this._renderSummaryItem(arr);
         },
         _renderSummaryItem: function(arr){
