@@ -51,21 +51,42 @@ foreach ($sortItems as $item){
     $items[$item->name] = $item;
 }
 
+// set group items
 foreach ($items as $item){
-    if (empty($item->url) || empty($item->parent)){
+    if ($item->isParent){
         $menu[$item->name] = $item;
     }
 }
 
+$rootItemCount = 0;
 foreach ($items as $item){
-    if (!empty($item->parent)){
-        if (!empty($menu[$item->parent])){
-            $menu[$item->parent]->childs[] = $item;
-        } else {
-            $menu[$item->name] = $item;
+    // clean parent if not found
+    if (!empty($item->parent) && empty($menu[$item->parent])){
+        $item->parent = "";
+    }
+
+    if (empty($item->parent)){
+        $rootItemCount++;
+    }
+}
+
+// group items
+if ($rootItemCount > 7 && $isViewChild){
+    foreach ($items as $item){
+        if (!empty($item->group) && !empty($menu[$item->group])){
+            $item->parent = $item->group;
         }
     }
 }
+
+foreach ($items as $item){
+    if (!empty($menu[$item->parent])){
+        $menu[$item->parent]->childs[] = $item;
+    } else {
+        $menu[$item->name] = $item;
+    }
+}
+
 
 $lst = "";
 foreach ($menu as $item){

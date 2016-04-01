@@ -59,7 +59,23 @@ class BosManager extends Ab_ModuleManager {
                 "title" => $i18n->Translate('bosmenu.controlPanel'),
                 "icon" => "/modules/bos/images/cpanel-24.png",
                 "url" => "bos/wspace/ws"
-            )
+            ),
+            array(
+                "name" => "personal",
+                "isParent" => true,
+                "order" => "950",
+                "title" => $i18n->Translate('bosmenu.personal'),
+                // "icon" => "/modules/bos/images/cpanel-24.png",
+                "url" => "bos/wspace/ws"
+            ),
+            array(
+                "name" => "social",
+                "isParent" => true,
+                "order" => "900",
+                "title" => $i18n->Translate('bosmenu.social'),
+                // "icon" => "/modules/bos/images/cpanel-24.png",
+                "url" => "bos/wspace/ws"
+            ),
         );
     }
 }

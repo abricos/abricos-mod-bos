@@ -2,7 +2,9 @@
 return array(
     "title" => "Bos UI",
     "bosmenu" => array(
-        "controlPanel" => "Панель управления"
+        "controlPanel" => "Панель управления",
+        "personal" => "Персональные",
+        "social" => "Социальные"
     ),
     'content' => array(
         'index' => array(

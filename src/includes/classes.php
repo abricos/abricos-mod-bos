@@ -20,6 +20,12 @@ class BosMenuItem {
     public $title;
     public $descript;
     public $parent;
+
+    /**
+     * Group, if items is more
+     * @var string
+     */
+    public $group;
     public $url;
     public $method;
     public $component;
@@ -31,9 +37,9 @@ class BosMenuItem {
 
     public $sortKey;
 
-    public function __construct($module, $d = array()) {
+    public function __construct($module, $d = array()){
         $this->module = $module;
-        if (!is_array($d)) {
+        if (!is_array($d)){
             return;
         }
 
@@ -41,10 +47,11 @@ class BosMenuItem {
         $this->title = strval($d['title']);
         $this->descript = isset($d['descript']) ? strval($d['descript']) : "";
         $this->parent = isset($d['parent']) ? strval($d['parent']) : '';
+        $this->group = isset($d['group']) ? strval($d['group']) : '';
         $this->url = isset($d['url']) ? strval($d['url']) : "";
         $this->method = isset($d['method']) ? strval($d['method']) : "";
         $this->component = isset($d['component']) ? strval($d['component']) : "";
-        $this->icon = strval($d['icon']);
+        $this->icon = isset($d['icon']) ? strval($d['icon']) : "";
         $this->role = isset($d['role']) ? intval($d['role']) : 0;
         $this->order = isset($d['order']) ? intval($d['order']) : 0;
 
