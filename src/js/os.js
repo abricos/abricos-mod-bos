@@ -14,7 +14,7 @@ Component.entryPoint = function(NS){
 
     // TODO: CHECK - IF IE disable dynamic CSS
     if (Y.UA.ie > 0){
-        Brick.util.CSS.disableCSSComponent = true;
+        // Brick.util.CSS.disableCSSComponent = true;
     }
 
     NS.WorkspaceMenuWidget = Y.Base.create('workspaceMenuWidget', SYS.AppWidget, [], {
