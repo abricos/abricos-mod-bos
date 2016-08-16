@@ -81,5 +81,3 @@ class BosModule extends Ab_Module {
 }
 
 Abricos::ModuleRegister(new BosModule());
-
-?>

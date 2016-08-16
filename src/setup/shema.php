@@ -13,8 +13,6 @@ $updateManager = Ab_UpdateManager::$current;
 $db = Abricos::$db;
 $pfx = $db->prefix;
 
-if ($updateManager->isInstall()) {
+if ($updateManager->isInstall()){
 
 }
-
-?>

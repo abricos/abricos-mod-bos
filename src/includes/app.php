@@ -84,5 +84,3 @@ class BosApp extends AbricosApplication {
         return $list;
     }
 }
-
-?>

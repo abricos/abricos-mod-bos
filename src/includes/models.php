@@ -19,5 +19,3 @@ class BosSummary extends AbricosModel {
 class BosSummaryList extends AbricosModelList {
 
 }
-
-?>

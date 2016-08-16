@@ -79,5 +79,3 @@ class BosManager extends Ab_ModuleManager {
         );
     }
 }
-
-?>

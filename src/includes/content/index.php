@@ -37,5 +37,3 @@ foreach ($modules as $name => $module){
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
     'extList' => $extList
 ));
-
-?>

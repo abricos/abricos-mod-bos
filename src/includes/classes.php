@@ -23,6 +23,7 @@ class BosMenuItem {
 
     /**
      * Group, if items is more
+     *
      * @var string
      */
     public $group;
@@ -61,5 +62,3 @@ class BosMenuItem {
         $this->isParent = !empty($d['isParent']);
     }
 }
-
-?>

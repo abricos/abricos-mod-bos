@@ -144,5 +144,3 @@ if (empty($p['noWrap'])){
 $brick->content = Brick::ReplaceVarByData($brick->content, array(
     "result" => $result
 ));
-
-?>
