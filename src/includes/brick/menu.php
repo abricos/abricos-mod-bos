@@ -138,6 +138,9 @@ if (empty($p['noWrap'])){
         "result" => $lst
     ));
 } else {
+    if (empty($lst)){
+        return $brick->content = "";
+    }
     $result = $lst;
 }
 
